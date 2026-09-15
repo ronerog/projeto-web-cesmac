@@ -12,23 +12,20 @@
 
   const formularioAnuncio = document.querySelector("#formulario-anuncio");
   const mensagemFormulario = document.querySelector("#mensagem-formulario");
-  const campoCartaId = document.querySelector("#carta-id");
-  const campoCartaImagem = document.querySelector("#carta-imagem");
-  const campoCartaImagemPequena = document.querySelector("#carta-imagem-pequena");
-  const campoCartaNumero = document.querySelector("#carta-numero");
-  const campoCartaNome = document.querySelector("#carta-nome");
-  const campoCartaColecao = document.querySelector("#carta-colecao");
-  const campoCartaRaridade = document.querySelector("#carta-raridade");
-  const campoPreco = document.querySelector("#preco");
+  const campoCartaImagem = document.querySelector("#cartaImagem");
+  const campoCartaNumero = document.querySelector("#cartaNumero");
+  const campoCartaNome = document.querySelector("#cartaNome");
+  const campoCartaColecao = document.querySelector("#cartaColecao");
+  const campoCartaRaridade = document.querySelector("#cartaRaridade");
+  const campoPreco = document.querySelector("#precoVisivel");
+  const campoPrecoOculto = document.querySelector("#preco");
   const campoCondicao = document.querySelector("#condicao");
   const campoVendedor = document.querySelector("#vendedor");
   const campoDescricao = document.querySelector("#descricao");
   const contadorDescricao = document.querySelector("#contador-descricao");
 
   function selecionarCarta(carta, elementoClicado) {
-    campoCartaId.value = carta.id;
     campoCartaImagem.value = carta.imagemGrande;
-    campoCartaImagemPequena.value = carta.imagemPequena;
     campoCartaNumero.value = carta.numero;
     campoCartaNome.value = carta.nome;
     campoCartaColecao.value = carta.colecao;
@@ -115,32 +112,13 @@
   }
 
   function publicarAnuncio(evento) {
-    evento.preventDefault();
     if (!validarFormulario()) {
+      evento.preventDefault();
       UI.exibirMensagem(mensagemFormulario, "Revise os campos destacados: escolha uma carta, informe um preço maior que zero e selecione a condição.", "erro");
       return;
     }
 
-    const anuncio = Storage.salvarAnuncio({
-      cartaId: campoCartaId.value,
-      cartaNome: campoCartaNome.value,
-      cartaImagem: campoCartaImagem.value,
-      cartaImagemPequena: campoCartaImagemPequena.value,
-      cartaColecao: campoCartaColecao.value,
-      cartaRaridade: campoCartaRaridade.value,
-      cartaNumero: campoCartaNumero.value,
-      preco: UI.valorDoCampoMoeda(campoPreco),
-      condicao: campoCondicao.value,
-      descricao: campoDescricao.value.trim(),
-      vendedor: campoVendedor.value.trim()
-    });
-
-    if (!anuncio) {
-      UI.exibirMensagem(mensagemFormulario, "Não foi possível salvar o anúncio: este navegador está bloqueando o armazenamento local da página.", "erro");
-      return;
-    }
-
-    window.location.href = UI.caminho("pages/listagem.html");
+    campoPrecoOculto.value = UI.valorDoCampoMoeda(campoPreco);
   }
 
   function atualizarContadorDescricao() {

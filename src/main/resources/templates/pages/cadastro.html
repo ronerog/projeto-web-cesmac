@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono&display=swap">
   <link rel="stylesheet" href="../css/style.css">
   <script defer src="../js/api.js"></script>
-  <script defer src="../js/storage.js"></script>
   <script defer src="../js/ui-helpers.js"></script>
   <script defer src="../js/cadastro.js"></script>
 </head>
@@ -71,36 +70,35 @@
       </div>
       <p class="mensagem oculto" id="mensagem-formulario"></p>
 
-      <form class="formulario" id="formulario-anuncio" novalidate>
-        <input type="hidden" id="carta-id">
-        <input type="hidden" id="carta-imagem">
-        <input type="hidden" id="carta-imagem-pequena">
-        <input type="hidden" id="carta-numero">
+      <form class="formulario" id="formulario-anuncio" th:action="@{/anuncios}" th:object="${anuncio}" method="post" novalidate>
+        <input type="hidden" th:field="*{cartaImagem}">
+        <input type="hidden" th:field="*{cartaNumero}">
+        <input type="hidden" th:field="*{preco}">
 
         <div class="campo">
-          <label for="carta-nome">Carta selecionada</label>
-          <input type="text" id="carta-nome" readonly placeholder="Selecione uma carta na busca">
+          <label for="cartaNome">Carta selecionada</label>
+          <input type="text" th:field="*{cartaNome}" readonly placeholder="Selecione uma carta na busca">
         </div>
         <div class="campo">
-          <label for="carta-colecao">Coleção</label>
-          <input type="text" id="carta-colecao" readonly>
+          <label for="cartaColecao">Coleção</label>
+          <input type="text" th:field="*{cartaColecao}" readonly>
         </div>
         <div class="campo">
-          <label for="carta-raridade">Raridade</label>
-          <input type="text" id="carta-raridade" readonly>
+          <label for="cartaRaridade">Raridade</label>
+          <input type="text" th:field="*{cartaRaridade}" readonly>
         </div>
 
         <div class="campo">
-          <label for="preco">Preço</label>
+          <label for="precoVisivel">Preço</label>
           <div class="entrada-prefixo">
             <span>R$</span>
-            <input type="text" id="preco" inputmode="decimal" placeholder="0,00" autocomplete="off">
+            <input type="text" id="precoVisivel" inputmode="decimal" placeholder="0,00" autocomplete="off">
           </div>
           <span class="campo-ajuda">Digite só os números: a máscara formata sozinha.</span>
         </div>
         <div class="campo">
           <label for="condicao">Condição</label>
-          <select id="condicao">
+          <select th:field="*{condicao}">
             <option value="">Selecione a condição</option>
             <option value="Nova/Lacrada">Nova/Lacrada</option>
             <option value="Excelente">Excelente</option>
@@ -111,12 +109,12 @@
         </div>
         <div class="campo">
           <label for="vendedor">Vendedor</label>
-          <input type="text" id="vendedor" maxlength="40" placeholder="Seu nome ou apelido" autocomplete="off">
+          <input type="text" th:field="*{vendedor}" maxlength="40" placeholder="Seu nome ou apelido" autocomplete="off">
         </div>
 
         <div class="campo campo-largo">
           <label for="descricao">Descrição</label>
-          <textarea id="descricao" maxlength="300" placeholder="Estado de conservação, ano, detalhes da carta..."></textarea>
+          <textarea th:field="*{descricao}" maxlength="300" placeholder="Estado de conservação, ano, detalhes da carta..."></textarea>
           <span class="campo-ajuda"><span id="contador-descricao">0</span>/300 caracteres</span>
         </div>
 

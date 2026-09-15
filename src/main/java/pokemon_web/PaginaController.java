@@ -57,7 +57,8 @@ public class PaginaController {
 	}
 
 	@GetMapping("/pages/cadastro.html")
-	public String cadastro() {
+	public String cadastro(Model model) {
+		model.addAttribute("anuncio", new Anuncio());
 		return "pages/cadastro";
 	}
 
