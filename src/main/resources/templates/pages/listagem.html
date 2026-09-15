@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono&display=swap">
   <link rel="stylesheet" href="../css/style.css">
-  <script defer src="../js/api.js"></script>
-  <script defer src="../js/storage.js"></script>
-  <script defer src="../js/ui-helpers.js"></script>
-  <script defer src="../js/listagem.js"></script>
 </head>
 <body>
   <header class="cabecalho">
@@ -44,52 +40,45 @@
   </section>
 
   <main class="container conteudo">
-    <section class="barra-ferramentas">
-      <div class="grupo-ferramenta">
-        <span class="ferramenta-rotulo">Busque por status:</span>
-        <div class="chips" id="chips-status">
-          <button class="chip ativo" type="button" data-status="todos">
-            <img src="../img/icone-todos.svg" alt="">Todos
-          </button>
-          <button class="chip" type="button" data-status="a-venda">
-            <img src="../img/icone-a-venda.svg" alt="">À venda
-          </button>
-          <button class="chip" type="button" data-status="reservada">
-            <img src="../img/icone-reservada.svg" alt="">Reservada
-          </button>
-          <button class="chip" type="button" data-status="vendida">
-            <img src="../img/icone-vendida.svg" alt="">Vendida
-          </button>
-        </div>
-      </div>
-      <div class="grupo-ferramenta">
-        <span class="ferramenta-rotulo">Encontre sua carta:</span>
-        <form class="busca-linha" id="formulario-filtros">
-          <input type="text" id="filtro-nome" maxlength="40" placeholder="Eu escolho você!" autocomplete="off">
-          <select id="filtro-raridade">
-            <option value="todas">Todas as raridades</option>
-          </select>
-        </form>
-      </div>
-    </section>
-
     <div class="titulo-secao">
       <h2>Anúncios</h2>
-      <span class="contador-resultados" id="contador-resultados">0 anúncios</span>
+      <span class="contador-resultados" th:text="${anuncios.size()} + (${anuncios.size()} == 1 ? ' anúncio' : ' anúncios')">0 anúncios</span>
     </div>
 
-    <div class="grade-cartas" id="grade-anuncios"></div>
+    <div class="grade-cartas" th:if="${!anuncios.isEmpty()}">
+      <article class="carta-anuncio" th:each="anuncio : ${anuncios}">
+        <div class="carta-imagem">
+          <img th:src="${anuncio.cartaImagem}" th:alt="${anuncio.cartaNome}" loading="lazy">
+        </div>
+        <h3 class="carta-nome">
+          <a th:href="@{/pages/detalhes.html(id=${anuncio.id})}" th:text="'• ' + ${anuncio.cartaNome} + ' •'">• Nome da carta •</a>
+        </h3>
+        <div class="etiquetas">
+          <span class="etiqueta" th:text="${anuncio.cartaRaridade}">Raridade</span>
+          <span class="badge" th:classappend="'badge-' + ${anuncio.status}" th:switch="${anuncio.status}">
+            <th:block th:case="'a-venda'">À venda</th:block>
+            <th:block th:case="'reservada'">Reservada</th:block>
+            <th:block th:case="'vendida'">Vendida</th:block>
+          </span>
+        </div>
+        <div class="carta-estatisticas">
+          <div class="estatistica">
+            <span class="estatistica-valor" th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.preco, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span>
+            <span class="estatistica-rotulo">Preço</span>
+          </div>
+          <div class="estatistica">
+            <span class="estatistica-valor" th:text="${anuncio.condicao}">Condição</span>
+            <span class="estatistica-rotulo">Condição</span>
+          </div>
+        </div>
+        <a class="botao botao-pequeno botao-largo" th:href="@{/pages/detalhes.html(id=${anuncio.id})}">Mais detalhes</a>
+      </article>
+    </div>
 
-    <div class="estado-vazio oculto" id="estado-vazio">
+    <div class="estado-vazio" th:if="${anuncios.isEmpty()}">
       <img src="../img/carta-placeholder.svg" alt="">
-      <p id="texto-estado-vazio">Nenhum anúncio cadastrado ainda.</p>
+      <p>Nenhum anúncio cadastrado ainda.</p>
       <a class="botao" href="cadastro.html">Anunciar carta</a>
-    </div>
-
-    <div class="paginacao oculto" id="paginacao">
-      <button class="botao botao-secundario botao-pequeno" type="button" id="pagina-anterior">Anterior</button>
-      <span class="paginacao-indicador" id="indicador-pagina">1 / 1</span>
-      <button class="botao botao-secundario botao-pequeno" type="button" id="pagina-proxima">Próxima</button>
     </div>
   </main>
 

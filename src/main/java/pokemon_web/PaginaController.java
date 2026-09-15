@@ -1,10 +1,17 @@
 package pokemon_web;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PaginaController {
+
+	private final AnuncioService anuncioService;
+
+	public PaginaController(AnuncioService anuncioService) {
+		this.anuncioService = anuncioService;
+	}
 
 	@GetMapping({ "/", "/index.html" })
 	public String painel() {
@@ -12,7 +19,8 @@ public class PaginaController {
 	}
 
 	@GetMapping("/pages/listagem.html")
-	public String listagem() {
+	public String listagem(Model model) {
+		model.addAttribute("anuncios", anuncioService.listar());
 		return "pages/listagem";
 	}
 
