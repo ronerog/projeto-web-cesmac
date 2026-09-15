@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel | Poketplace</title>
+  <link rel="icon" href="img/logo-prisma.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/api.js"></script>
+  <script defer src="js/storage.js"></script>
+  <script defer src="js/ui-helpers.js"></script>
+  <script defer src="js/painel.js"></script>
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="container cabecalho-conteudo">
+      <a class="marca" href="index.html">
+        <img class="marca-icone" src="img/logo-prisma.svg" alt="">
+        <span>Poketplace</span>
+      </a>
+      <nav class="navegacao">
+        <a class="ativo" href="index.html">Painel</a>
+        <a href="pages/listagem.html">Mercado</a>
+        <a href="pages/cadastro.html">Anunciar</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container hero-conteudo">
+      <div class="hero-texto">
+        <p class="hero-etiqueta" id="destaque-etiqueta">Destaque da coleção</p>
+        <h1 class="hero-titulo" id="destaque-nome">Poketplace</h1>
+        <div class="etiquetas" id="destaque-etiquetas"></div>
+        <p class="hero-descricao" id="destaque-descricao">Marketplace de cartas Pokémon TCG entre colecionadores. Busque a carta na API oficial, defina preço e condição e publique o anúncio.</p>
+        <div class="grupo-botoes">
+          <a class="botao" id="destaque-link" href="pages/listagem.html">Mais detalhes</a>
+          <a class="botao botao-secundario" href="pages/cadastro.html">Anunciar carta</a>
+        </div>
+      </div>
+      <div class="hero-carta">
+        <img id="destaque-imagem" src="img/carta-placeholder.svg" alt="Carta em destaque">
+      </div>
+    </div>
+    <div class="hero-curva"></div>
+  </section>
+
+  <main class="container conteudo">
+    <section class="resumo">
+      <div class="cartao-resumo">
+        <img src="img/icone-cartas.svg" alt="">
+        <div>
+          <span class="cartao-resumo-rotulo">Anúncios ativos</span>
+          <span class="cartao-resumo-valor" id="total-ativos">0</span>
+        </div>
+      </div>
+      <div class="cartao-resumo valor">
+        <img src="img/icone-gema.svg" alt="">
+        <div>
+          <span class="cartao-resumo-rotulo">Valor em anúncio</span>
+          <span class="cartao-resumo-valor" id="valor-total">R$ 0,00</span>
+        </div>
+      </div>
+      <div class="cartao-resumo vendidas">
+        <img src="img/icone-medalha.svg" alt="">
+        <div>
+          <span class="cartao-resumo-rotulo">Cartas vendidas</span>
+          <span class="cartao-resumo-valor" id="total-vendidas">0</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="titulo-secao">
+      <h2>Últimos anúncios</h2>
+      <a href="pages/listagem.html">Ver todos</a>
+    </div>
+    <div class="grade-cartas" id="ultimos-anuncios"></div>
+    <div class="estado-vazio oculto" id="estado-vazio">
+      <img src="img/carta-placeholder.svg" alt="">
+      <p>Nenhum anúncio cadastrado ainda.</p>
+      <div class="grupo-botoes grupo-botoes-centro">
+        <a class="botao" href="pages/cadastro.html">Criar primeiro anúncio</a>
+        <button class="botao botao-secundario" type="button" id="botao-exemplos">Carregar exemplos</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="rodape">
+    <div class="container">Poketplace · protótipo acadêmico de Laboratório de Programação · dados das cartas: Pokémon TCG API</div>
+  </footer>
+</body>
+</html>

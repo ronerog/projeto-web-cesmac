@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anunciar carta | Poketplace</title>
+  <link rel="icon" href="../img/logo-prisma.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono&display=swap">
+  <link rel="stylesheet" href="../css/style.css">
+  <script defer src="../js/api.js"></script>
+  <script defer src="../js/storage.js"></script>
+  <script defer src="../js/ui-helpers.js"></script>
+  <script defer src="../js/cadastro.js"></script>
+</head>
+<body>
+  <header class="cabecalho">
+    <div class="container cabecalho-conteudo">
+      <a class="marca" href="../index.html">
+        <img class="marca-icone" src="../img/logo-prisma.svg" alt="">
+        <span>Poketplace</span>
+      </a>
+      <nav class="navegacao">
+        <a href="../index.html">Painel</a>
+        <a href="listagem.html">Mercado</a>
+        <a class="ativo" href="cadastro.html">Anunciar</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero hero-compacto">
+    <div class="container hero-conteudo">
+      <div class="hero-texto">
+        <p class="hero-etiqueta">Novo anúncio</p>
+        <h1 class="hero-titulo">Anunciar carta</h1>
+        <p class="hero-descricao">Busque a carta na Pokémon TCG API e complete os dados do anúncio.</p>
+      </div>
+      <div class="hero-carta">
+        <img src="../img/icone-gema.svg" alt="" width="140">
+      </div>
+    </div>
+    <div class="hero-curva"></div>
+  </section>
+
+  <main class="container conteudo">
+    <section class="painel">
+      <h2>1. Encontrar a carta</h2>
+      <form class="busca" id="formulario-busca">
+        <div class="campo">
+          <label for="termo-busca">Nome da carta</label>
+          <input type="text" id="termo-busca" maxlength="40" placeholder="chari, pikachu, mewtwo" autocomplete="off">
+          <span class="campo-ajuda">A busca aceita trecho do nome: "chari" acha Charizard, Charmander e Charmeleon.</span>
+        </div>
+        <div class="campo campo-botao">
+          <button class="botao" type="submit" id="botao-buscar">Buscar</button>
+        </div>
+      </form>
+      <p class="mensagem oculto" id="mensagem-busca"></p>
+      <div class="resultados-busca" id="resultados-busca"></div>
+    </section>
+
+    <section class="painel">
+      <h2>2. Dados do anúncio</h2>
+      <div class="previa oculto" id="previa-carta">
+        <img id="previa-imagem" src="../img/carta-placeholder.svg" alt="Prévia da carta selecionada">
+        <div class="previa-dados">
+          <h3 id="previa-nome">Nenhuma carta selecionada</h3>
+          <p class="campo-ajuda" id="previa-detalhes"></p>
+        </div>
+      </div>
+      <p class="mensagem oculto" id="mensagem-formulario"></p>
+
+      <form class="formulario" id="formulario-anuncio" novalidate>
+        <input type="hidden" id="carta-id">
+        <input type="hidden" id="carta-imagem">
+        <input type="hidden" id="carta-imagem-pequena">
+        <input type="hidden" id="carta-numero">
+
+        <div class="campo">
+          <label for="carta-nome">Carta selecionada</label>
+          <input type="text" id="carta-nome" readonly placeholder="Selecione uma carta na busca">
+        </div>
+        <div class="campo">
+          <label for="carta-colecao">Coleção</label>
+          <input type="text" id="carta-colecao" readonly>
+        </div>
+        <div class="campo">
+          <label for="carta-raridade">Raridade</label>
+          <input type="text" id="carta-raridade" readonly>
+        </div>
+
+        <div class="campo">
+          <label for="preco">Preço</label>
+          <div class="entrada-prefixo">
+            <span>R$</span>
+            <input type="text" id="preco" inputmode="decimal" placeholder="0,00" autocomplete="off">
+          </div>
+          <span class="campo-ajuda">Digite só os números: a máscara formata sozinha.</span>
+        </div>
+        <div class="campo">
+          <label for="condicao">Condição</label>
+          <select id="condicao">
+            <option value="">Selecione a condição</option>
+            <option value="Nova/Lacrada">Nova/Lacrada</option>
+            <option value="Excelente">Excelente</option>
+            <option value="Boa">Boa</option>
+            <option value="Jogada">Jogada</option>
+            <option value="Danificada">Danificada</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="vendedor">Vendedor</label>
+          <input type="text" id="vendedor" maxlength="40" placeholder="Seu nome ou apelido" autocomplete="off">
+        </div>
+
+        <div class="campo campo-largo">
+          <label for="descricao">Descrição</label>
+          <textarea id="descricao" maxlength="300" placeholder="Estado de conservação, ano, detalhes da carta..."></textarea>
+          <span class="campo-ajuda"><span id="contador-descricao">0</span>/300 caracteres</span>
+        </div>
+
+        <div class="campo-largo grupo-botoes">
+          <button class="botao" type="submit">Publicar anúncio</button>
+          <a class="botao botao-secundario" href="listagem.html">Cancelar</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <div class="container">Poketplace · protótipo acadêmico de Laboratório de Programação · dados das cartas: Pokémon TCG API</div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 224" width="160" height="224">
+  <defs>
+    <linearGradient id="placeholder-fundo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#eaf6ff"/>
+      <stop offset="0.5" stop-color="#f3ecff"/>
+      <stop offset="1" stop-color="#ffeef8"/>
+    </linearGradient>
+    <linearGradient id="placeholder-traco" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#8fd8ff"/>
+      <stop offset="0.5" stop-color="#c3aaff"/>
+      <stop offset="1" stop-color="#ffa8dc"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="152" height="216" rx="16" fill="url(#placeholder-fundo)" stroke="url(#placeholder-traco)" stroke-width="3"/>
+  <path d="M80 52l30 44-30 44-30-44z" fill="none" stroke="url(#placeholder-traco)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M80 72l18 24-18 24-18-24z" fill="url(#placeholder-traco)" opacity="0.35"/>
+  <path d="M50 96h60M80 52v88" stroke="url(#placeholder-traco)" stroke-width="2" opacity="0.55"/>
+  <rect x="34" y="176" width="92" height="8" rx="4" fill="#c3aaff" opacity="0.35"/>
+  <rect x="50" y="192" width="60" height="8" rx="4" fill="#ffa8dc" opacity="0.35"/>
+</svg>

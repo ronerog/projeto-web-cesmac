@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="moeda-gema" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff2c4"/>
+      <stop offset="0.5" stop-color="#ffd9a8"/>
+      <stop offset="1" stop-color="#ffc0e4"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 56 8 30l8-14h32l8 14z" fill="url(#moeda-gema)" stroke="#5b53a6" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M8 30h48M22 30 32 56l10-26M16 16l6 14M48 16l-6 14" fill="none" stroke="#5b53a6" stroke-width="1.8"/>
+  <path d="M22 30l10-14 10 14-10 26z" fill="#ffffff" opacity="0.6"/>
+  <path d="M52 6l2.2 5.8L60 14l-5.8 2.2L52 22l-2.2-5.8L44 14l5.8-2.2z" fill="#ffffff" stroke="#5b53a6" stroke-width="1.6" stroke-linejoin="round"/>
+</svg>

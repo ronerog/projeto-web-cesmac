@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="gema-esquerda" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#bfe9ff"/>
+      <stop offset="1" stop-color="#c9b7ff"/>
+    </linearGradient>
+    <linearGradient id="gema-direita" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffc7ec"/>
+      <stop offset="1" stop-color="#fff0c2"/>
+    </linearGradient>
+    <linearGradient id="gema-topo" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c7fff0"/>
+      <stop offset="0.5" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dcd0ff"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 60 4 26l10-16h36l10 16z" fill="url(#gema-esquerda)"/>
+  <path d="M32 60 60 26 50 10H32z" fill="url(#gema-direita)"/>
+  <path d="M4 26h56L50 10H14z" fill="url(#gema-topo)"/>
+  <path d="M32 60 20 26l6-16h12l6 16z" fill="#ffffff" opacity="0.55"/>
+  <path d="M32 60 4 26l10-16h36l10 16z" fill="none" stroke="#5b53a6" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M4 26h56M20 26 32 60l12-34M14 10l6 16M50 10l-6 16" fill="none" stroke="#5b53a6" stroke-width="1.8" stroke-linejoin="round"/>
+</svg>
