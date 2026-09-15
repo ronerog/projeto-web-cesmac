@@ -750,6 +750,8 @@ h1, h2, h3 {
 
 .entrada-prefixo input:focus {
   outline: none;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .campo-ajuda {
