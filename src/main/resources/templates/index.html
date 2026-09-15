@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono&display=swap">
   <link rel="stylesheet" href="css/style.css">
-  <script defer src="js/api.js"></script>
-  <script defer src="js/storage.js"></script>
-  <script defer src="js/ui-helpers.js"></script>
-  <script defer src="js/painel.js"></script>
 </head>
 <body>
   <header class="cabecalho">
@@ -31,18 +27,37 @@
 
   <section class="hero">
     <div class="container hero-conteudo">
-      <div class="hero-texto">
-        <p class="hero-etiqueta" id="destaque-etiqueta">Destaque da coleção</p>
-        <h1 class="hero-titulo" id="destaque-nome">Poketplace</h1>
-        <div class="etiquetas" id="destaque-etiquetas"></div>
-        <p class="hero-descricao" id="destaque-descricao">Marketplace de cartas Pokémon TCG entre colecionadores. Busque a carta na API oficial, defina preço e condição e publique o anúncio.</p>
+      <div class="hero-texto" th:if="${destaque != null}">
+        <p class="hero-etiqueta">Carta mais valiosa</p>
+        <h1 class="hero-titulo" th:text="${destaque.cartaNome}">Poketplace</h1>
+        <div class="etiquetas">
+          <span class="etiqueta" th:text="${destaque.cartaColecao}">Coleção</span>
+          <span class="etiqueta" th:text="${destaque.cartaRaridade}">Raridade</span>
+          <span class="etiqueta" th:text="'R$ ' + ${#numbers.formatDecimal(destaque.preco, 1, 'POINT', 2, 'COMMA')}">Preço</span>
+          <span class="badge" th:classappend="'badge-' + ${destaque.status}" th:switch="${destaque.status}">
+            <th:block th:case="'a-venda'">À venda</th:block>
+            <th:block th:case="'reservada'">Reservada</th:block>
+            <th:block th:case="'vendida'">Vendida</th:block>
+          </span>
+        </div>
+        <p class="hero-descricao" th:text="${#strings.isEmpty(destaque.descricao)} ? ('Carta ' + ${destaque.cartaRaridade} + ' da coleção ' + ${destaque.cartaColecao} + ', anunciada por ' + ${destaque.vendedor} + '.') : ${destaque.descricao}">Descrição da carta em destaque.</p>
         <div class="grupo-botoes">
-          <a class="botao" id="destaque-link" href="pages/listagem.html">Mais detalhes</a>
+          <a class="botao" th:href="@{/pages/detalhes.html(id=${destaque.id})}">Mais detalhes</a>
+          <a class="botao botao-secundario" href="pages/cadastro.html">Anunciar carta</a>
+        </div>
+      </div>
+      <div class="hero-texto" th:unless="${destaque != null}">
+        <p class="hero-etiqueta">Destaque da coleção</p>
+        <h1 class="hero-titulo">Poketplace</h1>
+        <p class="hero-descricao">Marketplace de cartas Pokémon TCG entre colecionadores. Busque a carta na API oficial, defina preço e condição e publique o anúncio.</p>
+        <div class="grupo-botoes">
+          <a class="botao" href="pages/listagem.html">Mais detalhes</a>
           <a class="botao botao-secundario" href="pages/cadastro.html">Anunciar carta</a>
         </div>
       </div>
       <div class="hero-carta">
-        <img id="destaque-imagem" src="img/carta-placeholder.svg" alt="Carta em destaque">
+        <img th:src="${destaque != null} ? ${destaque.cartaImagem} : 'img/carta-placeholder.svg'"
+             th:alt="${destaque != null} ? ${destaque.cartaNome} : 'Carta em destaque'">
       </div>
     </div>
     <div class="hero-curva"></div>
@@ -54,21 +69,21 @@
         <img src="img/icone-cartas.svg" alt="">
         <div>
           <span class="cartao-resumo-rotulo">Anúncios ativos</span>
-          <span class="cartao-resumo-valor" id="total-ativos">0</span>
+          <span class="cartao-resumo-valor" th:text="${totalAtivos}">0</span>
         </div>
       </div>
       <div class="cartao-resumo valor">
         <img src="img/icone-gema.svg" alt="">
         <div>
           <span class="cartao-resumo-rotulo">Valor em anúncio</span>
-          <span class="cartao-resumo-valor" id="valor-total">R$ 0,00</span>
+          <span class="cartao-resumo-valor" th:text="'R$ ' + ${#numbers.formatDecimal(valorTotal, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span>
         </div>
       </div>
       <div class="cartao-resumo vendidas">
         <img src="img/icone-medalha.svg" alt="">
         <div>
           <span class="cartao-resumo-rotulo">Cartas vendidas</span>
-          <span class="cartao-resumo-valor" id="total-vendidas">0</span>
+          <span class="cartao-resumo-valor" th:text="${totalVendidas}">0</span>
         </div>
       </div>
     </section>
@@ -77,14 +92,39 @@
       <h2>Últimos anúncios</h2>
       <a href="pages/listagem.html">Ver todos</a>
     </div>
-    <div class="grade-cartas" id="ultimos-anuncios"></div>
-    <div class="estado-vazio oculto" id="estado-vazio">
+    <div class="grade-cartas" th:if="${!ultimosAnuncios.isEmpty()}">
+      <article class="carta-anuncio" th:each="anuncio : ${ultimosAnuncios}">
+        <div class="carta-imagem">
+          <img th:src="${anuncio.cartaImagem}" th:alt="${anuncio.cartaNome}" loading="lazy">
+        </div>
+        <h3 class="carta-nome">
+          <a th:href="@{/pages/detalhes.html(id=${anuncio.id})}" th:text="'• ' + ${anuncio.cartaNome} + ' •'">• Nome da carta •</a>
+        </h3>
+        <div class="etiquetas">
+          <span class="etiqueta" th:text="${anuncio.cartaRaridade}">Raridade</span>
+          <span class="badge" th:classappend="'badge-' + ${anuncio.status}" th:switch="${anuncio.status}">
+            <th:block th:case="'a-venda'">À venda</th:block>
+            <th:block th:case="'reservada'">Reservada</th:block>
+            <th:block th:case="'vendida'">Vendida</th:block>
+          </span>
+        </div>
+        <div class="carta-estatisticas">
+          <div class="estatistica">
+            <span class="estatistica-valor" th:text="'R$ ' + ${#numbers.formatDecimal(anuncio.preco, 1, 'POINT', 2, 'COMMA')}">R$ 0,00</span>
+            <span class="estatistica-rotulo">Preço</span>
+          </div>
+          <div class="estatistica">
+            <span class="estatistica-valor" th:text="${anuncio.condicao}">Condição</span>
+            <span class="estatistica-rotulo">Condição</span>
+          </div>
+        </div>
+        <a class="botao botao-pequeno botao-largo" th:href="@{/pages/detalhes.html(id=${anuncio.id})}">Mais detalhes</a>
+      </article>
+    </div>
+    <div class="estado-vazio" th:if="${ultimosAnuncios.isEmpty()}">
       <img src="img/carta-placeholder.svg" alt="">
       <p>Nenhum anúncio cadastrado ainda.</p>
-      <div class="grupo-botoes grupo-botoes-centro">
-        <a class="botao" href="pages/cadastro.html">Criar primeiro anúncio</a>
-        <button class="botao botao-secundario" type="button" id="botao-exemplos">Carregar exemplos</button>
-      </div>
+      <a class="botao" href="pages/cadastro.html">Criar primeiro anúncio</a>
     </div>
   </main>
 
