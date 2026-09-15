@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class PaginaController {
@@ -63,7 +64,9 @@ public class PaginaController {
 	}
 
 	@GetMapping("/pages/detalhes.html")
-	public String detalhes() {
+	public String detalhes(@RequestParam(required = false) Long id, Model model) {
+		Anuncio anuncio = id != null ? anuncioService.buscarPorId(id) : null;
+		model.addAttribute("anuncio", anuncio);
 		return "pages/detalhes";
 	}
 
