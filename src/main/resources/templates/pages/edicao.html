@@ -91,13 +91,10 @@
           <textarea th:field="*{descricao}" maxlength="300"></textarea>
           <span class="campo-ajuda"><span id="contador-descricao">0</span>/300 caracteres</span>
         </div>
-
-        <div class="campo-largo grupo-botoes">
-          <button class="botao" type="submit">Salvar alterações</button>
-        </div>
       </form>
 
       <div class="grupo-botoes">
+        <button class="botao" type="submit" form="formulario-edicao">Salvar alterações</button>
         <form th:action="@{/anuncios/{id}/status(id=${anuncio.id})}" method="post" onsubmit="return confirm('Confirmar venda desta carta?');" th:if="${anuncio.status != 'vendida'}">
           <input type="hidden" name="status" value="vendida">
           <button class="botao botao-sucesso" type="submit">Marcar vendida</button>

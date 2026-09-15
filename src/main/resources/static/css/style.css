@@ -653,7 +653,16 @@ h1, h2, h3 {
 .grupo-botoes {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 12px;
+}
+
+.grupo-botoes form {
+  display: contents;
+}
+
+.formulario + .grupo-botoes {
+  margin-top: 20px;
 }
 
 .grupo-botoes-centro {
