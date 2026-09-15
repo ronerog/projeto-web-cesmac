@@ -41,4 +41,26 @@ public class AnuncioService {
 		return anuncio;
 	}
 
+	public Anuncio atualizar(Long id, double preco, String condicao, String descricao) {
+		Anuncio anuncio = buscarPorId(id);
+		if (anuncio != null) {
+			anuncio.setPreco(preco);
+			anuncio.setCondicao(condicao);
+			anuncio.setDescricao(descricao);
+		}
+		return anuncio;
+	}
+
+	public Anuncio atualizarStatus(Long id, String status) {
+		Anuncio anuncio = buscarPorId(id);
+		if (anuncio != null) {
+			anuncio.setStatus(status);
+		}
+		return anuncio;
+	}
+
+	public boolean excluir(Long id) {
+		return anuncios.removeIf(anuncio -> anuncio.getId().equals(id));
+	}
+
 }

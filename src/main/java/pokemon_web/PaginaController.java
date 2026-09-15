@@ -71,7 +71,9 @@ public class PaginaController {
 	}
 
 	@GetMapping("/pages/edicao.html")
-	public String edicao() {
+	public String edicao(@RequestParam(required = false) Long id, Model model) {
+		Anuncio anuncio = id != null ? anuncioService.buscarPorId(id) : null;
+		model.addAttribute("anuncio", anuncio);
 		return "pages/edicao";
 	}
 
