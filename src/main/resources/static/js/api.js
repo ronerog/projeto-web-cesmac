@@ -1,7 +1,5 @@
 const API = (function () {
-  const URL_BASE = "https://api.pokemontcg.io/v2";
-  const CHAVE_API = "";
-  const LIMITE_RESULTADOS = 24;
+  const URL_BASE = "/api/cartas";
   const TENTATIVAS = 3;
 
   const CARTAS_FALLBACK = [
@@ -35,29 +33,10 @@ const API = (function () {
 
   let ultimaBuscaUsouFallback = false;
 
-  function montarCabecalhos() {
-    return CHAVE_API ? { "X-Api-Key": CHAVE_API } : {};
-  }
-
   function esperar(milissegundos) {
     return new Promise(function (resolver) {
       window.setTimeout(resolver, milissegundos);
     });
-  }
-
-  function normalizarCarta(carta) {
-    const imagens = carta.images || {};
-    const colecao = carta.set || {};
-    const numero = carta.number || "-";
-    return {
-      id: carta.id,
-      nome: carta.name || "Carta sem nome",
-      imagemPequena: imagens.small || "",
-      imagemGrande: imagens.large || imagens.small || "",
-      colecao: colecao.name || "Coleção desconhecida",
-      raridade: carta.rarity || "Não informada",
-      numero: colecao.printedTotal ? numero + "/" + colecao.printedTotal : numero
-    };
   }
 
   function buscarNoFallback(termo) {
@@ -70,7 +49,7 @@ const API = (function () {
   async function consultar(endereco) {
     for (let tentativa = 1; tentativa <= TENTATIVAS; tentativa += 1) {
       try {
-        const resposta = await fetch(endereco, { headers: montarCabecalhos() });
+        const resposta = await fetch(endereco);
         if (resposta.ok) {
           return await resposta.json();
         }
@@ -89,26 +68,25 @@ const API = (function () {
     if (!termo) {
       return [];
     }
-    const consulta = encodeURIComponent('name:"*' + termo + '*"');
-    const conteudo = await consultar(URL_BASE + "/cards?q=" + consulta + "&pageSize=" + LIMITE_RESULTADOS);
+    const conteudo = await consultar(URL_BASE + "/buscar?nome=" + encodeURIComponent(termo));
     if (!conteudo) {
       ultimaBuscaUsouFallback = true;
       return buscarNoFallback(termo);
     }
     ultimaBuscaUsouFallback = false;
-    return (conteudo.data || []).map(normalizarCarta);
+    return conteudo;
   }
 
   async function buscarCartaPorId(id) {
-    const conteudo = await consultar(URL_BASE + "/cards/" + encodeURIComponent(id));
-    if (!conteudo || !conteudo.data) {
+    const conteudo = await consultar(URL_BASE + "/" + encodeURIComponent(id));
+    if (!conteudo) {
       ultimaBuscaUsouFallback = true;
       return CARTAS_FALLBACK.find(function (carta) {
         return carta.id === id;
       }) || null;
     }
     ultimaBuscaUsouFallback = false;
-    return normalizarCarta(conteudo.data);
+    return conteudo;
   }
 
   function usouFallback() {
