@@ -81,6 +81,17 @@ const UI = (function () {
     return valido;
   }
 
+  function limparErroDoCampo(campo) {
+    const grupo = campo.closest(".campo");
+    if (!grupo) {
+      return;
+    }
+    grupo.classList.remove("campo-erro");
+    grupo.querySelectorAll(".campo-mensagem-erro").forEach(function (mensagem) {
+      mensagem.remove();
+    });
+  }
+
   function exibirMensagem(elemento, texto, tipo) {
     elemento.textContent = texto;
     elemento.className = "mensagem";
@@ -196,6 +207,7 @@ const UI = (function () {
     criarCartaAnuncio,
     criarEtiqueta,
     validarCampoObrigatorio,
+    limparErroDoCampo,
     exibirMensagem,
     rotuloStatus,
     obterParametroUrl,

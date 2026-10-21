@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import pokemon_web.model.Anuncio;
 import pokemon_web.model.AnuncioCadastroForm;
+import pokemon_web.model.AnuncioEdicaoForm;
 import pokemon_web.model.StatusAnuncio;
 import pokemon_web.service.AnuncioService;
 
@@ -80,6 +81,9 @@ public class PaginaController {
 	public String edicao(@RequestParam(required = false) Long id, Model model) {
 		Anuncio anuncio = id != null ? anuncioService.buscarPorId(id) : null;
 		model.addAttribute("anuncio", anuncio);
+		if (anuncio != null) {
+			model.addAttribute("formulario", AnuncioEdicaoForm.de(anuncio));
+		}
 		return "pages/edicao";
 	}
 

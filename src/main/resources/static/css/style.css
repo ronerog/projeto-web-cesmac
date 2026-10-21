@@ -780,6 +780,11 @@ h1, h2, h3 {
   color: var(--vermelho);
 }
 
+.campo-mensagem-erro {
+  font-size: 11px;
+  color: var(--vermelho);
+}
+
 .busca {
   display: flex;
   flex-wrap: wrap;

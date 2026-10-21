@@ -30,12 +30,15 @@
     campoPrecoReal.value = UI.valorDoCampoMoeda(campoPreco);
   });
 
-  campoDescricao.addEventListener("input", atualizarContadorDescricao);
+  campoDescricao.addEventListener("input", function () {
+    atualizarContadorDescricao();
+    UI.limparErroDoCampo(campoDescricao);
+  });
   campoPreco.addEventListener("input", function () {
-    campoPreco.closest(".campo").classList.remove("campo-erro");
+    UI.limparErroDoCampo(campoPreco);
   });
   campoCondicao.addEventListener("change", function () {
-    campoCondicao.closest(".campo").classList.remove("campo-erro");
+    UI.limparErroDoCampo(campoCondicao);
   });
 
   UI.preencherCampoMoeda(campoPreco, Number(campoPreco.dataset.valorInicial || 0));

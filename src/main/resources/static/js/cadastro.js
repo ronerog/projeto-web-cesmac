@@ -40,7 +40,7 @@
     });
     elementoClicado.classList.add("selecionada");
 
-    campoCartaNome.closest(".campo").classList.remove("campo-erro");
+    UI.limparErroDoCampo(campoCartaNome);
     UI.exibirMensagem(mensagemFormulario, "", "");
   }
 
@@ -125,15 +125,22 @@
 
   formularioBusca.addEventListener("submit", buscarCartas);
   formularioAnuncio.addEventListener("submit", publicarAnuncio);
-  campoDescricao.addEventListener("input", atualizarContadorDescricao);
+  campoDescricao.addEventListener("input", function () {
+    atualizarContadorDescricao();
+    UI.limparErroDoCampo(campoDescricao);
+  });
   campoPreco.addEventListener("input", function () {
-    campoPreco.closest(".campo").classList.remove("campo-erro");
+    UI.limparErroDoCampo(campoPreco);
   });
   campoCondicao.addEventListener("change", function () {
-    campoCondicao.closest(".campo").classList.remove("campo-erro");
+    UI.limparErroDoCampo(campoCondicao);
+  });
+  campoVendedor.addEventListener("input", function () {
+    UI.limparErroDoCampo(campoVendedor);
   });
 
+  UI.preencherCampoMoeda(campoPreco, Number(campoPrecoOculto.value) || 0);
   UI.aplicarMascaraMoeda(campoPreco);
-  UI.avisarSobreArmazenamento();
   atualizarContadorDescricao();
+  UI.avisarSobreArmazenamento();
 })();

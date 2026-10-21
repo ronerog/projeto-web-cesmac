@@ -19,6 +19,14 @@ public class AnuncioEdicaoForm {
 	@Size(max = 300, message = "A descrição pode ter no máximo 300 caracteres.")
 	private String descricao;
 
+	public static AnuncioEdicaoForm de(Anuncio anuncio) {
+		AnuncioEdicaoForm formulario = new AnuncioEdicaoForm();
+		formulario.setPreco(anuncio.getPreco());
+		formulario.setCondicao(anuncio.getCondicao());
+		formulario.setDescricao(anuncio.getDescricao());
+		return formulario;
+	}
+
 	public Double getPreco() {
 		return preco;
 	}
