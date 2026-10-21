@@ -102,10 +102,6 @@ public class CartaService {
 		return carta != null ? cartaRepository.save(carta) : null;
 	}
 
-	public Carta salvar(Carta carta) {
-		return cartaRepository.save(carta);
-	}
-
 	public List<Carta> listarSalvas() {
 		return cartaRepository.findAll();
 	}
