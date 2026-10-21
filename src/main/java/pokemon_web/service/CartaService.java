@@ -94,10 +94,6 @@ public class CartaService {
 		return carta != null ? cartaRepository.save(carta) : null;
 	}
 
-	public List<Carta> listarSalvas() {
-		return cartaRepository.findAll();
-	}
-
 	private Carta buscarNaApiPorId(String id) {
 		try {
 			PokemonTcgCartaRespostaDto resposta = consultarComTentativas(() -> restClient.get()
