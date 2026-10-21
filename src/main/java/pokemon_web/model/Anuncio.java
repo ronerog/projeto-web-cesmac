@@ -15,8 +15,8 @@ public class Anuncio {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@ManyToOne
-	@JoinColumn(name = "carta_id")
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "carta_id", nullable = false)
 	private Carta carta;
 	private double preco;
 	private String condicao;

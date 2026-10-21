@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: pokemon-web-postgres
+    environment:
+      POSTGRES_DB: pokemon_web
+      POSTGRES_USER: pokemon
+      POSTGRES_PASSWORD: pokemon
+    ports:
+      - "5433:5432"
+    volumes:
+      - pokemon-web-dados:/var/lib/postgresql/data
+
+volumes:
+  pokemon-web-dados:
