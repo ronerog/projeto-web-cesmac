@@ -8,11 +8,8 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import pokemon_web.model.Anuncio;
-import pokemon_web.model.AnuncioCadastroForm;
-import pokemon_web.model.AnuncioEdicaoForm;
 import pokemon_web.model.StatusAnuncio;
 import pokemon_web.service.AnuncioService;
 
@@ -27,7 +24,7 @@ public class PaginaController {
 		this.anuncioService = anuncioService;
 	}
 
-	@GetMapping({ "/", "/index.html" })
+	@GetMapping("/")
 	public String painel(Model model) {
 		List<Anuncio> anuncios = anuncioService.listar();
 
@@ -56,35 +53,6 @@ public class PaginaController {
 		model.addAttribute("valorTotal", valorTotal);
 		model.addAttribute("ultimosAnuncios", ultimosAnuncios);
 		return "index";
-	}
-
-	@GetMapping("/pages/listagem.html")
-	public String listagem(Model model) {
-		model.addAttribute("anuncios", anuncioService.listar());
-		return "pages/listagem";
-	}
-
-	@GetMapping("/pages/cadastro.html")
-	public String cadastro(Model model) {
-		model.addAttribute("anuncio", new AnuncioCadastroForm());
-		return "pages/cadastro";
-	}
-
-	@GetMapping("/pages/detalhes.html")
-	public String detalhes(@RequestParam(required = false) Long id, Model model) {
-		Anuncio anuncio = id != null ? anuncioService.buscarPorId(id) : null;
-		model.addAttribute("anuncio", anuncio);
-		return "pages/detalhes";
-	}
-
-	@GetMapping("/pages/edicao.html")
-	public String edicao(@RequestParam(required = false) Long id, Model model) {
-		Anuncio anuncio = id != null ? anuncioService.buscarPorId(id) : null;
-		model.addAttribute("anuncio", anuncio);
-		if (anuncio != null) {
-			model.addAttribute("formulario", AnuncioEdicaoForm.de(anuncio));
-		}
-		return "pages/edicao";
 	}
 
 }
