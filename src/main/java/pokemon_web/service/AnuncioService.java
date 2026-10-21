@@ -31,10 +31,6 @@ public class AnuncioService {
 		return anuncioRepository.findById(id).orElse(null);
 	}
 
-	public Anuncio salvar(Anuncio anuncio) {
-		return anuncioRepository.save(anuncio);
-	}
-
 	public Anuncio criar(AnuncioCadastroForm formulario) {
 		Carta carta = cartaService.salvarParaAnuncio(formulario.getCartaId());
 		if (carta == null) {
@@ -59,15 +55,20 @@ public class AnuncioService {
 		return anuncioRepository.save(anuncio);
 	}
 
-	public Anuncio atualizarStatus(Long id, StatusAnuncio status) {
-		Optional<Anuncio> existente = anuncioRepository.findById(id);
-		if (existente.isEmpty()) {
-			return null;
+	public boolean alterarStatus(Long id, StatusAnuncio novoStatus) {
+		Anuncio anuncio = buscarPorId(id);
+		if (anuncio == null) {
+			return false;
 		}
 
-		Anuncio anuncio = existente.get();
-		anuncio.setStatus(status.getCodigo());
-		return anuncioRepository.save(anuncio);
+		boolean jaVendido = StatusAnuncio.VENDIDA.getCodigo().equals(anuncio.getStatus());
+		if (jaVendido && novoStatus != StatusAnuncio.VENDIDA) {
+			return false;
+		}
+
+		anuncio.setStatus(novoStatus.getCodigo());
+		anuncioRepository.save(anuncio);
+		return true;
 	}
 
 	public boolean excluir(Long id) {
