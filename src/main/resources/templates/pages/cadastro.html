@@ -68,24 +68,24 @@
           <p class="campo-ajuda" id="previa-detalhes"></p>
         </div>
       </div>
+      <p class="mensagem mensagem-erro" th:if="${erro != null}" th:text="${erro}">Erro ao publicar o anúncio.</p>
       <p class="mensagem oculto" id="mensagem-formulario"></p>
 
       <form class="formulario" id="formulario-anuncio" th:action="@{/anuncios}" th:object="${anuncio}" method="post" novalidate>
-        <input type="hidden" th:field="*{cartaImagem}">
-        <input type="hidden" th:field="*{cartaNumero}">
+        <input type="hidden" id="cartaId" name="cartaId">
         <input type="hidden" th:field="*{preco}">
 
         <div class="campo">
           <label for="cartaNome">Carta selecionada</label>
-          <input type="text" th:field="*{cartaNome}" readonly placeholder="Selecione uma carta na busca">
+          <input type="text" id="cartaNome" readonly placeholder="Selecione uma carta na busca">
         </div>
         <div class="campo">
           <label for="cartaColecao">Coleção</label>
-          <input type="text" th:field="*{cartaColecao}" readonly>
+          <input type="text" id="cartaColecao" readonly>
         </div>
         <div class="campo">
           <label for="cartaRaridade">Raridade</label>
-          <input type="text" th:field="*{cartaRaridade}" readonly>
+          <input type="text" id="cartaRaridade" readonly>
         </div>
 
         <div class="campo">

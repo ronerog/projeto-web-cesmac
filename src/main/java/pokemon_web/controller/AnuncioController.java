@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import pokemon_web.model.Anuncio;
 import pokemon_web.service.AnuncioService;
+import pokemon_web.service.ApiCartasIndisponivelException;
 
 @Controller
 public class AnuncioController {
@@ -20,9 +21,19 @@ public class AnuncioController {
 	}
 
 	@PostMapping("/anuncios")
-	public String criar(@ModelAttribute Anuncio anuncio) {
-		anuncio.setStatus("a-venda");
-		anuncioService.salvar(anuncio);
+	public String criar(@RequestParam(defaultValue = "") String cartaId, @ModelAttribute Anuncio anuncio,
+			RedirectAttributes redirectAttributes) {
+		try {
+			if (anuncioService.criar(anuncio, cartaId) == null) {
+				redirectAttributes.addFlashAttribute("erro",
+						"A carta selecionada não foi encontrada na Pokémon TCG API. Busque e selecione a carta novamente.");
+				return "redirect:/pages/cadastro.html";
+			}
+		} catch (ApiCartasIndisponivelException excecao) {
+			redirectAttributes.addFlashAttribute("erro",
+					"A Pokémon TCG API não respondeu ao confirmar a carta. Tente publicar novamente em alguns segundos.");
+			return "redirect:/pages/cadastro.html";
+		}
 		return "redirect:/pages/listagem.html";
 	}
 

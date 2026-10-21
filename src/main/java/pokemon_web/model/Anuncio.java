@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,11 +15,9 @@ public class Anuncio {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String cartaNome;
-	private String cartaImagem;
-	private String cartaColecao;
-	private String cartaRaridade;
-	private String cartaNumero;
+	@ManyToOne
+	@JoinColumn(name = "carta_id")
+	private Carta carta;
 	private double preco;
 	private String condicao;
 	private String descricao;
@@ -27,14 +27,10 @@ public class Anuncio {
 	public Anuncio() {
 	}
 
-	public Anuncio(Long id, String cartaNome, String cartaImagem, String cartaColecao, String cartaRaridade,
-			String cartaNumero, double preco, String condicao, String descricao, String vendedor, String status) {
+	public Anuncio(Long id, Carta carta, double preco, String condicao, String descricao, String vendedor,
+			String status) {
 		this.id = id;
-		this.cartaNome = cartaNome;
-		this.cartaImagem = cartaImagem;
-		this.cartaColecao = cartaColecao;
-		this.cartaRaridade = cartaRaridade;
-		this.cartaNumero = cartaNumero;
+		this.carta = carta;
 		this.preco = preco;
 		this.condicao = condicao;
 		this.descricao = descricao;
@@ -50,44 +46,32 @@ public class Anuncio {
 		this.id = id;
 	}
 
-	public String getCartaNome() {
-		return cartaNome;
+	public Carta getCarta() {
+		return carta;
 	}
 
-	public void setCartaNome(String cartaNome) {
-		this.cartaNome = cartaNome;
+	public void setCarta(Carta carta) {
+		this.carta = carta;
+	}
+
+	public String getCartaNome() {
+		return carta != null ? carta.getNome() : null;
 	}
 
 	public String getCartaImagem() {
-		return cartaImagem;
-	}
-
-	public void setCartaImagem(String cartaImagem) {
-		this.cartaImagem = cartaImagem;
+		return carta != null ? carta.getImagemGrande() : null;
 	}
 
 	public String getCartaColecao() {
-		return cartaColecao;
-	}
-
-	public void setCartaColecao(String cartaColecao) {
-		this.cartaColecao = cartaColecao;
+		return carta != null ? carta.getColecao() : null;
 	}
 
 	public String getCartaRaridade() {
-		return cartaRaridade;
-	}
-
-	public void setCartaRaridade(String cartaRaridade) {
-		this.cartaRaridade = cartaRaridade;
+		return carta != null ? carta.getRaridade() : null;
 	}
 
 	public String getCartaNumero() {
-		return cartaNumero;
-	}
-
-	public void setCartaNumero(String cartaNumero) {
-		this.cartaNumero = cartaNumero;
+		return carta != null ? carta.getNumero() : null;
 	}
 
 	public double getPreco() {

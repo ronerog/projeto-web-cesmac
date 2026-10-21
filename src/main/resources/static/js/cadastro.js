@@ -12,8 +12,7 @@
 
   const formularioAnuncio = document.querySelector("#formulario-anuncio");
   const mensagemFormulario = document.querySelector("#mensagem-formulario");
-  const campoCartaImagem = document.querySelector("#cartaImagem");
-  const campoCartaNumero = document.querySelector("#cartaNumero");
+  const campoCartaId = document.querySelector("#cartaId");
   const campoCartaNome = document.querySelector("#cartaNome");
   const campoCartaColecao = document.querySelector("#cartaColecao");
   const campoCartaRaridade = document.querySelector("#cartaRaridade");
@@ -25,8 +24,7 @@
   const contadorDescricao = document.querySelector("#contador-descricao");
 
   function selecionarCarta(carta, elementoClicado) {
-    campoCartaImagem.value = carta.imagemGrande;
-    campoCartaNumero.value = carta.numero;
+    campoCartaId.value = carta.id;
     campoCartaNome.value = carta.nome;
     campoCartaColecao.value = carta.colecao;
     campoCartaRaridade.value = carta.raridade;

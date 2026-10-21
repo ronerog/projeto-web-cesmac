@@ -1,9 +1,16 @@
 package pokemon_web.service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
@@ -18,66 +25,132 @@ public class CartaService {
 
 	private static final String URL_BASE = "https://api.pokemontcg.io/v2";
 	private static final int LIMITE_RESULTADOS = 24;
+	private static final int TENTATIVAS = 3;
+	private static final long INTERVALO_ENTRE_TENTATIVAS_MS = 600;
+	private static final Duration VALIDADE_CACHE = Duration.ofMinutes(10);
+	private static final int LIMITE_CACHE = 200;
 
 	private final CartaRepository cartaRepository;
 	private final RestClient restClient;
+	private final Map<String, BuscaEmCache> cacheBuscas = new ConcurrentHashMap<>();
 
 	public CartaService(CartaRepository cartaRepository) {
 		this.cartaRepository = cartaRepository;
-		this.restClient = RestClient.create(URL_BASE);
+
+		SimpleClientHttpRequestFactory fabrica = new SimpleClientHttpRequestFactory();
+		fabrica.setConnectTimeout(Duration.ofSeconds(5));
+		fabrica.setReadTimeout(Duration.ofSeconds(20));
+		this.restClient = RestClient.builder().baseUrl(URL_BASE).requestFactory(fabrica).build();
 	}
 
+	/**
+	 * Busca sempre na API externa, sem gravar no banco. A carta só é persistida
+	 * quando alguém cria um anúncio com ela (ver {@link #salvarParaAnuncio}).
+	 */
 	public List<Carta> buscarPorNome(String nome) {
 		String termo = nome == null ? "" : nome.trim();
 		if (termo.isEmpty()) {
 			return List.of();
 		}
 
-		String consulta = "name:\"*" + termo + "*\"";
-		try {
-			PokemonTcgListaRespostaDto resposta = restClient.get()
-					.uri(uriBuilder -> uriBuilder.path("/cards")
-							.queryParam("q", consulta)
-							.queryParam("pageSize", LIMITE_RESULTADOS)
-							.build())
-					.retrieve()
-					.body(PokemonTcgListaRespostaDto.class);
-
-			if (resposta == null || resposta.getData() == null) {
-				return cartaRepository.findByNomeContainingIgnoreCase(termo);
-			}
-
-			List<Carta> cartas = resposta.getData().stream().map(this::converter).toList();
-			return cartaRepository.saveAll(cartas);
-		} catch (RestClientException excecao) {
-			return cartaRepository.findByNomeContainingIgnoreCase(termo);
+		String chave = termo.toLowerCase();
+		BuscaEmCache emCache = cacheBuscas.get(chave);
+		if (emCache != null && emCache.expiraEm().isAfter(Instant.now())) {
+			return emCache.cartas();
 		}
+
+		String consulta = "name:\"*" + termo + "*\"";
+		PokemonTcgListaRespostaDto resposta = consultarComTentativas(() -> restClient.get()
+				.uri(uriBuilder -> uriBuilder.path("/cards")
+						.queryParam("q", consulta)
+						.queryParam("pageSize", LIMITE_RESULTADOS)
+						.build())
+				.retrieve()
+				.body(PokemonTcgListaRespostaDto.class));
+
+		List<Carta> cartas = resposta == null || resposta.getData() == null
+				? List.of()
+				: resposta.getData().stream().map(this::converter).toList();
+
+		if (cacheBuscas.size() >= LIMITE_CACHE) {
+			cacheBuscas.clear();
+		}
+		cacheBuscas.put(chave, new BuscaEmCache(cartas, Instant.now().plus(VALIDADE_CACHE)));
+		return cartas;
 	}
 
 	public Carta buscarPorId(String id) {
+		Optional<Carta> existente = cartaRepository.findById(id);
+		return existente.isPresent() ? existente.get() : buscarNaApiPorId(id);
+	}
+
+	/**
+	 * Garante que a carta esteja salva no banco antes de ser vinculada a um
+	 * anúncio. Retorna null se a carta não existir na API.
+	 */
+	public Carta salvarParaAnuncio(String id) {
+		if (id == null || id.isBlank()) {
+			return null;
+		}
+
 		Optional<Carta> existente = cartaRepository.findById(id);
 		if (existente.isPresent()) {
 			return existente.get();
 		}
 
-		try {
-			PokemonTcgCartaRespostaDto resposta = restClient.get()
-					.uri("/cards/{id}", id)
-					.retrieve()
-					.body(PokemonTcgCartaRespostaDto.class);
+		Carta carta = buscarNaApiPorId(id);
+		return carta != null ? cartaRepository.save(carta) : null;
+	}
 
-			if (resposta == null || resposta.getData() == null) {
-				return null;
-			}
-
-			return cartaRepository.save(converter(resposta.getData()));
-		} catch (RestClientException excecao) {
-			return null;
-		}
+	public Carta salvar(Carta carta) {
+		return cartaRepository.save(carta);
 	}
 
 	public List<Carta> listarSalvas() {
 		return cartaRepository.findAll();
+	}
+
+	private Carta buscarNaApiPorId(String id) {
+		try {
+			PokemonTcgCartaRespostaDto resposta = consultarComTentativas(() -> restClient.get()
+					.uri("/cards/{id}", id)
+					.retrieve()
+					.body(PokemonTcgCartaRespostaDto.class));
+
+			return resposta == null || resposta.getData() == null ? null : converter(resposta.getData());
+		} catch (HttpClientErrorException.NotFound excecao) {
+			return null;
+		}
+	}
+
+	/**
+	 * A Pokémon TCG API costuma responder 500 na primeira consulta de um termo
+	 * (enquanto monta o cache dela) e 200 logo em seguida, por isso falhas de
+	 * servidor ou de rede são repetidas. Erros 4xx são repassados direto.
+	 */
+	private <T> T consultarComTentativas(Supplier<T> consulta) {
+		RestClientException ultimaFalha = null;
+		for (int tentativa = 1; tentativa <= TENTATIVAS; tentativa++) {
+			try {
+				return consulta.get();
+			} catch (HttpClientErrorException excecao) {
+				throw excecao;
+			} catch (RestClientException excecao) {
+				ultimaFalha = excecao;
+				if (tentativa < TENTATIVAS) {
+					esperar(INTERVALO_ENTRE_TENTATIVAS_MS * tentativa);
+				}
+			}
+		}
+		throw new ApiCartasIndisponivelException(ultimaFalha);
+	}
+
+	private void esperar(long milissegundos) {
+		try {
+			Thread.sleep(milissegundos);
+		} catch (InterruptedException excecao) {
+			Thread.currentThread().interrupt();
+		}
 	}
 
 	private Carta converter(PokemonTcgCardDto dto) {
@@ -97,6 +170,9 @@ public class CartaService {
 				colecao.getName() != null ? colecao.getName() : "Coleção desconhecida",
 				dto.getRarity() != null ? dto.getRarity() : "Não informada",
 				numero);
+	}
+
+	private record BuscaEmCache(List<Carta> cartas, Instant expiraEm) {
 	}
 
 }

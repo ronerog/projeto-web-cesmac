@@ -2,6 +2,7 @@ package pokemon_web.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,8 +26,9 @@ public class CartaController {
 	}
 
 	@GetMapping("/api/cartas/{id}")
-	public Carta buscarPorId(@PathVariable String id) {
-		return cartaService.buscarPorId(id);
+	public ResponseEntity<Carta> buscarPorId(@PathVariable String id) {
+		Carta carta = cartaService.buscarPorId(id);
+		return carta != null ? ResponseEntity.ok(carta) : ResponseEntity.notFound().build();
 	}
 
 }

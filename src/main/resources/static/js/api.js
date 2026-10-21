@@ -1,6 +1,5 @@
 const API = (function () {
   const URL_BASE = "/api/cartas";
-  const TENTATIVAS = 3;
 
   const CARTAS_FALLBACK = [
     { id: "pl1-2", nome: "Blastoise", imagemPequena: "https://images.pokemontcg.io/pl1/2.png", imagemGrande: "https://images.pokemontcg.io/pl1/2_hires.png", colecao: "Platinum", raridade: "Rare Holo", numero: "2/127" },
@@ -33,12 +32,6 @@ const API = (function () {
 
   let ultimaBuscaUsouFallback = false;
 
-  function esperar(milissegundos) {
-    return new Promise(function (resolver) {
-      window.setTimeout(resolver, milissegundos);
-    });
-  }
-
   function buscarNoFallback(termo) {
     const busca = termo.trim().toLowerCase();
     return CARTAS_FALLBACK.filter(function (carta) {
@@ -46,21 +39,18 @@ const API = (function () {
     });
   }
 
+  // As novas tentativas contra a Pokémon TCG API ficam no backend; aqui só
+  // diferenciamos "API indisponível" (5xx ou falha de rede) de uma resposta válida.
   async function consultar(endereco) {
-    for (let tentativa = 1; tentativa <= TENTATIVAS; tentativa += 1) {
-      try {
-        const resposta = await fetch(endereco);
-        if (resposta.ok) {
-          return await resposta.json();
-        }
-      } catch (erro) {
-        ultimaBuscaUsouFallback = true;
+    try {
+      const resposta = await fetch(endereco);
+      if (resposta.ok) {
+        return { disponivel: true, conteudo: await resposta.json() };
       }
-      if (tentativa < TENTATIVAS) {
-        await esperar(500 * tentativa);
-      }
+      return { disponivel: resposta.status < 500, conteudo: null };
+    } catch (erro) {
+      return { disponivel: false, conteudo: null };
     }
-    return null;
   }
 
   async function buscarCartasPorNome(nome) {
@@ -68,25 +58,23 @@ const API = (function () {
     if (!termo) {
       return [];
     }
-    const conteudo = await consultar(URL_BASE + "/buscar?nome=" + encodeURIComponent(termo));
-    if (!conteudo) {
-      ultimaBuscaUsouFallback = true;
+    const resultado = await consultar(URL_BASE + "/buscar?nome=" + encodeURIComponent(termo));
+    ultimaBuscaUsouFallback = !resultado.disponivel;
+    if (!resultado.disponivel) {
       return buscarNoFallback(termo);
     }
-    ultimaBuscaUsouFallback = false;
-    return conteudo;
+    return resultado.conteudo || [];
   }
 
   async function buscarCartaPorId(id) {
-    const conteudo = await consultar(URL_BASE + "/" + encodeURIComponent(id));
-    if (!conteudo) {
-      ultimaBuscaUsouFallback = true;
+    const resultado = await consultar(URL_BASE + "/" + encodeURIComponent(id));
+    ultimaBuscaUsouFallback = !resultado.disponivel;
+    if (!resultado.disponivel) {
       return CARTAS_FALLBACK.find(function (carta) {
         return carta.id === id;
       }) || null;
     }
-    ultimaBuscaUsouFallback = false;
-    return conteudo;
+    return resultado.conteudo;
   }
 
   function usouFallback() {
