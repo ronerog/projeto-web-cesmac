@@ -142,5 +142,4 @@
   UI.preencherCampoMoeda(campoPreco, Number(campoPrecoOculto.value) || 0);
   UI.aplicarMascaraMoeda(campoPreco);
   atualizarContadorDescricao();
-  UI.avisarSobreArmazenamento();
 })();

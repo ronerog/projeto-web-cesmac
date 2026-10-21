@@ -64,20 +64,9 @@ const API = (function () {
     return resultado.conteudo || [];
   }
 
-  async function buscarCartaPorId(id) {
-    const resultado = await consultar(URL_BASE + "/" + encodeURIComponent(id));
-    ultimaBuscaUsouFallback = !resultado.disponivel;
-    if (!resultado.disponivel) {
-      return CARTAS_FALLBACK.find(function (carta) {
-        return carta.id === id;
-      }) || null;
-    }
-    return resultado.conteudo;
-  }
-
   function usouFallback() {
     return ultimaBuscaUsouFallback;
   }
 
-  return { buscarCartasPorNome, buscarCartaPorId, usouFallback };
+  return { buscarCartasPorNome, usouFallback };
 })();
