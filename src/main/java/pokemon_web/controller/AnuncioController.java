@@ -3,6 +3,7 @@ package pokemon_web.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,9 +23,14 @@ import pokemon_web.service.CartaService;
 @Controller
 public class AnuncioController {
 
+	private static final String PAGINA_LISTAGEM = "pages/listagem";
 	private static final String PAGINA_CADASTRO = "pages/cadastro";
+	private static final String PAGINA_DETALHES = "pages/detalhes";
 	private static final String PAGINA_EDICAO = "pages/edicao";
-	private static final String REDIRECIONAR_EDICAO = "redirect:/pages/edicao.html?id=";
+	private static final String REDIRECIONAR_LISTAGEM = "redirect:/anuncios";
+	private static final String ATRIBUTO_ANUNCIO = "anuncio";
+	private static final String ATRIBUTO_FORMULARIO = "formulario";
+	private static final String ATRIBUTO_MENSAGEM = "mensagem";
 
 	private final AnuncioService anuncioService;
 	private final CartaService cartaService;
@@ -34,14 +40,42 @@ public class AnuncioController {
 		this.cartaService = cartaService;
 	}
 
+	@GetMapping("/anuncios")
+	public String listar(Model model) {
+		model.addAttribute("anuncios", anuncioService.listar());
+		return PAGINA_LISTAGEM;
+	}
+
+	@GetMapping("/anuncios/novo")
+	public String novo(Model model) {
+		model.addAttribute(ATRIBUTO_ANUNCIO, new AnuncioCadastroForm());
+		return PAGINA_CADASTRO;
+	}
+
+	@GetMapping("/anuncios/{id}")
+	public String detalhes(@PathVariable Long id, Model model) {
+		model.addAttribute(ATRIBUTO_ANUNCIO, anuncioService.buscarPorId(id));
+		return PAGINA_DETALHES;
+	}
+
+	@GetMapping("/anuncios/{id}/editar")
+	public String edicao(@PathVariable Long id, Model model) {
+		Anuncio anuncio = anuncioService.buscarPorId(id);
+		model.addAttribute(ATRIBUTO_ANUNCIO, anuncio);
+		if (anuncio != null) {
+			model.addAttribute(ATRIBUTO_FORMULARIO, AnuncioEdicaoForm.de(anuncio));
+		}
+		return PAGINA_EDICAO;
+	}
+
 	@PostMapping("/anuncios")
-	public String criar(@Valid @ModelAttribute("anuncio") AnuncioCadastroForm formulario, BindingResult validacao,
-			Model model) {
+	public String criar(@Valid @ModelAttribute(ATRIBUTO_ANUNCIO) AnuncioCadastroForm formulario,
+			BindingResult validacao, Model model) {
 		boolean apiIndisponivel = false;
 		if (!validacao.hasErrors()) {
 			try {
 				if (anuncioService.criar(formulario) != null) {
-					return "redirect:/pages/listagem.html";
+					return REDIRECIONAR_LISTAGEM;
 				}
 				validacao.rejectValue("cartaId", "carta.naoEncontrada",
 						"A carta selecionada não foi encontrada na Pokémon TCG API. Busque e selecione a carta novamente.");
@@ -57,42 +91,50 @@ public class AnuncioController {
 	}
 
 	@PostMapping("/anuncios/{id}/editar")
-	public String editar(@PathVariable Long id, @Valid @ModelAttribute("formulario") AnuncioEdicaoForm formulario,
+	public String editar(@PathVariable Long id, @Valid @ModelAttribute(ATRIBUTO_FORMULARIO) AnuncioEdicaoForm formulario,
 			BindingResult validacao, Model model, RedirectAttributes redirectAttributes) {
 		if (validacao.hasErrors()) {
-			model.addAttribute("anuncio", anuncioService.buscarPorId(id));
+			model.addAttribute(ATRIBUTO_ANUNCIO, anuncioService.buscarPorId(id));
 			return PAGINA_EDICAO;
 		}
 
 		if (anuncioService.atualizar(id, formulario) != null) {
-			redirectAttributes.addFlashAttribute("mensagem", "Alterações salvas com sucesso.");
+			redirectAttributes.addFlashAttribute(ATRIBUTO_MENSAGEM, "Alterações salvas com sucesso.");
 		}
-		return REDIRECIONAR_EDICAO + id;
+		return redirecionarEdicao(id);
 	}
 
 	@PostMapping("/anuncios/{id}/status")
 	public String alterarStatus(@PathVariable Long id, @Valid @ModelAttribute("statusForm") AlteracaoStatusForm statusForm,
 			BindingResult validacao, Model model, RedirectAttributes redirectAttributes) {
-		if (validacao.hasErrors()) {
-			Anuncio anuncio = anuncioService.buscarPorId(id);
-			model.addAttribute("anuncio", anuncio);
-			if (anuncio != null) {
-				model.addAttribute("formulario", AnuncioEdicaoForm.de(anuncio));
-			}
-			return PAGINA_EDICAO;
+		Anuncio anuncio = anuncioService.buscarPorId(id);
+		if (anuncio == null) {
+			return REDIRECIONAR_LISTAGEM;
 		}
 
-		StatusAnuncio novoStatus = StatusAnuncio.porCodigo(statusForm.getStatus()).orElseThrow();
-		if (anuncioService.atualizarStatus(id, novoStatus) != null) {
-			redirectAttributes.addFlashAttribute("mensagem", "Status atualizado com sucesso.");
+		if (!validacao.hasErrors()) {
+			StatusAnuncio novoStatus = StatusAnuncio.porCodigo(statusForm.getStatus()).orElseThrow();
+			if (anuncioService.alterarStatus(id, novoStatus)) {
+				redirectAttributes.addFlashAttribute(ATRIBUTO_MENSAGEM, "Status atualizado com sucesso.");
+				return redirecionarEdicao(id);
+			}
+			validacao.rejectValue("status", "status.transicaoInvalida",
+					"Um anúncio vendido não pode voltar a ficar à venda nem ser reservado.");
 		}
-		return REDIRECIONAR_EDICAO + id;
+
+		model.addAttribute(ATRIBUTO_ANUNCIO, anuncio);
+		model.addAttribute(ATRIBUTO_FORMULARIO, AnuncioEdicaoForm.de(anuncio));
+		return PAGINA_EDICAO;
 	}
 
 	@PostMapping("/anuncios/{id}/excluir")
 	public String excluir(@PathVariable Long id) {
 		anuncioService.excluir(id);
-		return "redirect:/pages/listagem.html";
+		return REDIRECIONAR_LISTAGEM;
+	}
+
+	private String redirecionarEdicao(Long id) {
+		return "redirect:/anuncios/" + id + "/editar";
 	}
 
 	private Carta cartaSelecionada(String cartaId) {
