@@ -43,10 +43,6 @@ public class CartaService {
 		this.restClient = RestClient.builder().baseUrl(URL_BASE).requestFactory(fabrica).build();
 	}
 
-	/**
-	 * Busca sempre na API externa, sem gravar no banco. A carta só é persistida
-	 * quando alguém cria um anúncio com ela (ver {@link #salvarParaAnuncio}).
-	 */
 	public List<Carta> buscarPorNome(String nome) {
 		String termo = nome == null ? "" : nome.trim();
 		if (termo.isEmpty()) {
@@ -84,10 +80,6 @@ public class CartaService {
 		return existente.isPresent() ? existente.get() : buscarNaApiPorId(id);
 	}
 
-	/**
-	 * Garante que a carta esteja salva no banco antes de ser vinculada a um
-	 * anúncio. Retorna null se a carta não existir na API.
-	 */
 	public Carta salvarParaAnuncio(String id) {
 		if (id == null || id.isBlank()) {
 			return null;
@@ -119,11 +111,6 @@ public class CartaService {
 		}
 	}
 
-	/**
-	 * A Pokémon TCG API costuma responder 500 na primeira consulta de um termo
-	 * (enquanto monta o cache dela) e 200 logo em seguida, por isso falhas de
-	 * servidor ou de rede são repetidas. Erros 4xx são repassados direto.
-	 */
 	private <T> T consultarComTentativas(Supplier<T> consulta) {
 		RestClientException ultimaFalha = null;
 		for (int tentativa = 1; tentativa <= TENTATIVAS; tentativa++) {

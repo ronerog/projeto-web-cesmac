@@ -39,8 +39,6 @@ const API = (function () {
     });
   }
 
-  // As novas tentativas contra a Pokémon TCG API ficam no backend; aqui só
-  // diferenciamos "API indisponível" (5xx ou falha de rede) de uma resposta válida.
   async function consultar(endereco) {
     try {
       const resposta = await fetch(endereco);

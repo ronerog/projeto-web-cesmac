@@ -6,7 +6,10 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import pokemon_web.model.Anuncio;
+import pokemon_web.model.AnuncioCadastroForm;
+import pokemon_web.model.AnuncioEdicaoForm;
 import pokemon_web.model.Carta;
+import pokemon_web.model.StatusAnuncio;
 import pokemon_web.repository.AnuncioRepository;
 
 @Service
@@ -32,42 +35,38 @@ public class AnuncioService {
 		return anuncioRepository.save(anuncio);
 	}
 
-	/**
-	 * Cria o anúncio vinculado à carta escolhida, gravando a carta no banco caso
-	 * ainda não exista. Retorna null se a carta não for encontrada na API.
-	 */
-	public Anuncio criar(Anuncio anuncio, String cartaId) {
-		Carta carta = cartaService.salvarParaAnuncio(cartaId);
+	public Anuncio criar(AnuncioCadastroForm formulario) {
+		Carta carta = cartaService.salvarParaAnuncio(formulario.getCartaId());
 		if (carta == null) {
 			return null;
 		}
 
-		anuncio.setCarta(carta);
-		anuncio.setStatus("a-venda");
+		Anuncio anuncio = new Anuncio(null, carta, formulario.getPreco(), formulario.getCondicao(),
+				formulario.getDescricao(), formulario.getVendedor(), StatusAnuncio.A_VENDA.getCodigo());
 		return anuncioRepository.save(anuncio);
 	}
 
-	public Anuncio atualizar(Long id, double preco, String condicao, String descricao) {
+	public Anuncio atualizar(Long id, AnuncioEdicaoForm formulario) {
 		Optional<Anuncio> existente = anuncioRepository.findById(id);
 		if (existente.isEmpty()) {
 			return null;
 		}
 
 		Anuncio anuncio = existente.get();
-		anuncio.setPreco(preco);
-		anuncio.setCondicao(condicao);
-		anuncio.setDescricao(descricao);
+		anuncio.setPreco(formulario.getPreco());
+		anuncio.setCondicao(formulario.getCondicao());
+		anuncio.setDescricao(formulario.getDescricao());
 		return anuncioRepository.save(anuncio);
 	}
 
-	public Anuncio atualizarStatus(Long id, String status) {
+	public Anuncio atualizarStatus(Long id, StatusAnuncio status) {
 		Optional<Anuncio> existente = anuncioRepository.findById(id);
 		if (existente.isEmpty()) {
 			return null;
 		}
 
 		Anuncio anuncio = existente.get();
-		anuncio.setStatus(status);
+		anuncio.setStatus(status.getCodigo());
 		return anuncioRepository.save(anuncio);
 	}
 

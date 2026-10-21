@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import pokemon_web.model.Anuncio;
+import pokemon_web.model.AnuncioCadastroForm;
+import pokemon_web.model.StatusAnuncio;
 import pokemon_web.service.AnuncioService;
 
 @Controller
@@ -28,11 +30,12 @@ public class PaginaController {
 	public String painel(Model model) {
 		List<Anuncio> anuncios = anuncioService.listar();
 
+		String vendida = StatusAnuncio.VENDIDA.getCodigo();
 		List<Anuncio> ativos = anuncios.stream()
-				.filter(anuncio -> !"vendida".equals(anuncio.getStatus()))
+				.filter(anuncio -> !vendida.equals(anuncio.getStatus()))
 				.toList();
 		long totalVendidas = anuncios.stream()
-				.filter(anuncio -> "vendida".equals(anuncio.getStatus()))
+				.filter(anuncio -> vendida.equals(anuncio.getStatus()))
 				.count();
 		double valorTotal = ativos.stream().mapToDouble(Anuncio::getPreco).sum();
 
@@ -62,7 +65,7 @@ public class PaginaController {
 
 	@GetMapping("/pages/cadastro.html")
 	public String cadastro(Model model) {
-		model.addAttribute("anuncio", new Anuncio());
+		model.addAttribute("anuncio", new AnuncioCadastroForm());
 		return "pages/cadastro";
 	}
 

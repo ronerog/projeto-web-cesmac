@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import pokemon_web.model.Carta;
 import pokemon_web.service.CartaService;
 
@@ -21,7 +23,7 @@ public class CartaController {
 	}
 
 	@GetMapping("/api/cartas/buscar")
-	public List<Carta> buscar(@RequestParam String nome) {
+	public List<Carta> buscar(@RequestParam @NotBlank @Size(max = 40) String nome) {
 		return cartaService.buscarPorNome(nome);
 	}
 

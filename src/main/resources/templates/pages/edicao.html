@@ -43,6 +43,7 @@
 
   <main class="container conteudo">
     <p class="mensagem mensagem-sucesso" th:if="${mensagem != null}" th:text="${mensagem}">Alterações salvas com sucesso.</p>
+    <p class="mensagem mensagem-erro" th:if="${erro != null}" th:text="${erro}">Erro ao salvar o anúncio.</p>
     <p class="mensagem mensagem-erro" th:unless="${anuncio != null}">Anúncio não encontrado. Volte ao mercado e escolha um anúncio válido.</p>
 
     <section class="painel" th:if="${anuncio != null}">
