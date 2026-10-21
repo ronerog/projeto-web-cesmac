@@ -4,23 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mercado | Poketplace</title>
-  <link rel="icon" href="../img/logo-prisma.svg">
+  <link rel="icon" th:href="@{/img/logo-prisma.svg}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono&display=swap">
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
   <header class="cabecalho">
     <div class="container cabecalho-conteudo">
-      <a class="marca" href="../index.html">
-        <img class="marca-icone" src="../img/logo-prisma.svg" alt="">
+      <a class="marca" th:href="@{/}">
+        <img class="marca-icone" th:src="@{/img/logo-prisma.svg}" alt="">
         <span>Poketplace</span>
       </a>
       <nav class="navegacao">
-        <a href="../index.html">Painel</a>
-        <a class="ativo" href="listagem.html">Mercado</a>
-        <a href="cadastro.html">Anunciar</a>
+        <a th:href="@{/}">Painel</a>
+        <a class="ativo" th:href="@{/anuncios}">Mercado</a>
+        <a th:href="@{/anuncios/novo}">Anunciar</a>
       </nav>
     </div>
   </header>
@@ -33,7 +33,7 @@
         <p class="hero-descricao">Todas as cartas anunciadas pelos colecionadores, com preço, condição e status.</p>
       </div>
       <div class="hero-carta">
-        <img src="../img/icone-cartas.svg" alt="" width="150">
+        <img th:src="@{/img/icone-cartas.svg}" alt="" width="150">
       </div>
     </div>
     <div class="hero-curva"></div>
@@ -51,7 +51,7 @@
           <img th:src="${anuncio.cartaImagem}" th:alt="${anuncio.cartaNome}" loading="lazy">
         </div>
         <h3 class="carta-nome">
-          <a th:href="@{/pages/detalhes.html(id=${anuncio.id})}" th:text="'• ' + ${anuncio.cartaNome} + ' •'">• Nome da carta •</a>
+          <a th:href="@{/anuncios/{id}(id=${anuncio.id})}" th:text="'• ' + ${anuncio.cartaNome} + ' •'">• Nome da carta •</a>
         </h3>
         <div class="etiquetas">
           <span class="etiqueta" th:text="${anuncio.cartaRaridade}">Raridade</span>
@@ -71,14 +71,14 @@
             <span class="estatistica-rotulo">Condição</span>
           </div>
         </div>
-        <a class="botao botao-pequeno botao-largo" th:href="@{/pages/detalhes.html(id=${anuncio.id})}">Mais detalhes</a>
+        <a class="botao botao-pequeno botao-largo" th:href="@{/anuncios/{id}(id=${anuncio.id})}">Mais detalhes</a>
       </article>
     </div>
 
     <div class="estado-vazio" th:if="${anuncios.isEmpty()}">
-      <img src="../img/carta-placeholder.svg" alt="">
+      <img th:src="@{/img/carta-placeholder.svg}" alt="">
       <p>Nenhum anúncio cadastrado ainda.</p>
-      <a class="botao" href="cadastro.html">Anunciar carta</a>
+      <a class="botao" th:href="@{/anuncios/novo}">Anunciar carta</a>
     </div>
   </main>
 

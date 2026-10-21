@@ -4,23 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detalhes do anúncio | Poketplace</title>
-  <link rel="icon" href="../img/logo-prisma.svg">
+  <link rel="icon" th:href="@{/img/logo-prisma.svg}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono&display=swap">
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
   <header class="cabecalho">
     <div class="container cabecalho-conteudo">
-      <a class="marca" href="../index.html">
-        <img class="marca-icone" src="../img/logo-prisma.svg" alt="">
+      <a class="marca" th:href="@{/}">
+        <img class="marca-icone" th:src="@{/img/logo-prisma.svg}" alt="">
         <span>Poketplace</span>
       </a>
       <nav class="navegacao">
-        <a href="../index.html">Painel</a>
-        <a class="ativo" href="listagem.html">Mercado</a>
-        <a href="cadastro.html">Anunciar</a>
+        <a th:href="@{/}">Painel</a>
+        <a class="ativo" th:href="@{/anuncios}">Mercado</a>
+        <a th:href="@{/anuncios/novo}">Anunciar</a>
       </nav>
     </div>
   </header>
@@ -33,7 +33,7 @@
         <p class="hero-descricao">Informações completas da carta anunciada.</p>
       </div>
       <div class="hero-carta">
-        <img src="../img/icone-medalha.svg" alt="" width="140">
+        <img th:src="@{/img/icone-medalha.svg}" alt="" width="140">
       </div>
     </div>
     <div class="hero-curva"></div>
@@ -74,8 +74,8 @@
           </dl>
           <p class="descricao" th:text="${#strings.isEmpty(anuncio.descricao)} ? 'O vendedor não escreveu uma descrição para esta carta.' : ${anuncio.descricao}">Descrição</p>
           <div class="grupo-botoes">
-            <a class="botao" th:href="@{/pages/edicao.html(id=${anuncio.id})}">Editar anúncio</a>
-            <a class="botao botao-secundario" href="listagem.html">Ver outros anúncios</a>
+            <a class="botao" th:href="@{/anuncios/{id}/editar(id=${anuncio.id})}">Editar anúncio</a>
+            <a class="botao botao-secundario" th:href="@{/anuncios}">Ver outros anúncios</a>
           </div>
         </div>
       </div>

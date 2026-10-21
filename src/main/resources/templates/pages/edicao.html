@@ -4,25 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerenciar anúncio | Poketplace</title>
-  <link rel="icon" href="../img/logo-prisma.svg" th:href="@{/img/logo-prisma.svg}">
+  <link rel="icon" th:href="@{/img/logo-prisma.svg}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono&display=swap">
-  <link rel="stylesheet" href="../css/style.css" th:href="@{/css/style.css}">
-  <script defer src="../js/ui-helpers.js" th:src="@{/js/ui-helpers.js}"></script>
-  <script defer src="../js/edicao.js" th:src="@{/js/edicao.js}"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script defer th:src="@{/js/ui-helpers.js}"></script>
+  <script defer th:src="@{/js/edicao.js}"></script>
 </head>
 <body>
   <header class="cabecalho">
     <div class="container cabecalho-conteudo">
-      <a class="marca" href="../index.html" th:href="@{/index.html}">
-        <img class="marca-icone" src="../img/logo-prisma.svg" th:src="@{/img/logo-prisma.svg}" alt="">
+      <a class="marca" th:href="@{/}">
+        <img class="marca-icone" th:src="@{/img/logo-prisma.svg}" alt="">
         <span>Poketplace</span>
       </a>
       <nav class="navegacao">
-        <a href="../index.html" th:href="@{/index.html}">Painel</a>
-        <a class="ativo" href="listagem.html" th:href="@{/pages/listagem.html}">Mercado</a>
-        <a href="cadastro.html" th:href="@{/pages/cadastro.html}">Anunciar</a>
+        <a th:href="@{/}">Painel</a>
+        <a class="ativo" th:href="@{/anuncios}">Mercado</a>
+        <a th:href="@{/anuncios/novo}">Anunciar</a>
       </nav>
     </div>
   </header>
@@ -35,7 +35,7 @@
         <p class="hero-descricao">Ajuste preço, condição, descrição e status da carta anunciada.</p>
       </div>
       <div class="hero-carta">
-        <img src="../img/icone-gema.svg" th:src="@{/img/icone-gema.svg}" alt="" width="140">
+        <img th:src="@{/img/icone-gema.svg}" alt="" width="140">
       </div>
     </div>
     <div class="hero-curva"></div>

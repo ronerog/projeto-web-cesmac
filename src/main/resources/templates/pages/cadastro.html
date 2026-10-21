@@ -4,26 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anunciar carta | Poketplace</title>
-  <link rel="icon" href="../img/logo-prisma.svg" th:href="@{/img/logo-prisma.svg}">
+  <link rel="icon" th:href="@{/img/logo-prisma.svg}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono&display=swap">
-  <link rel="stylesheet" href="../css/style.css" th:href="@{/css/style.css}">
-  <script defer src="../js/api.js" th:src="@{/js/api.js}"></script>
-  <script defer src="../js/ui-helpers.js" th:src="@{/js/ui-helpers.js}"></script>
-  <script defer src="../js/cadastro.js" th:src="@{/js/cadastro.js}"></script>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+  <script defer th:src="@{/js/api.js}"></script>
+  <script defer th:src="@{/js/ui-helpers.js}"></script>
+  <script defer th:src="@{/js/cadastro.js}"></script>
 </head>
 <body>
   <header class="cabecalho">
     <div class="container cabecalho-conteudo">
-      <a class="marca" href="../index.html" th:href="@{/index.html}">
-        <img class="marca-icone" src="../img/logo-prisma.svg" th:src="@{/img/logo-prisma.svg}" alt="">
+      <a class="marca" th:href="@{/}">
+        <img class="marca-icone" th:src="@{/img/logo-prisma.svg}" alt="">
         <span>Poketplace</span>
       </a>
       <nav class="navegacao">
-        <a href="../index.html" th:href="@{/index.html}">Painel</a>
-        <a href="listagem.html" th:href="@{/pages/listagem.html}">Mercado</a>
-        <a class="ativo" href="cadastro.html" th:href="@{/pages/cadastro.html}">Anunciar</a>
+        <a th:href="@{/}">Painel</a>
+        <a th:href="@{/anuncios}">Mercado</a>
+        <a class="ativo" th:href="@{/anuncios/novo}">Anunciar</a>
       </nav>
     </div>
   </header>
@@ -36,7 +36,7 @@
         <p class="hero-descricao">Busque a carta na Pokémon TCG API e complete os dados do anúncio.</p>
       </div>
       <div class="hero-carta">
-        <img src="../img/icone-gema.svg" th:src="@{/img/icone-gema.svg}" alt="" width="140">
+        <img th:src="@{/img/icone-gema.svg}" alt="" width="140">
       </div>
     </div>
     <div class="hero-curva"></div>
@@ -62,7 +62,7 @@
     <section class="painel">
       <h2>2. Dados do anúncio</h2>
       <div class="previa" th:classappend="${cartaSelecionada == null} ? 'oculto'" id="previa-carta">
-        <img id="previa-imagem" src="../img/carta-placeholder.svg"
+        <img id="previa-imagem"
              th:src="${cartaSelecionada != null and cartaSelecionada.imagemGrande != null} ? ${cartaSelecionada.imagemGrande} : @{/img/carta-placeholder.svg}"
              th:alt="${cartaSelecionada != null} ? ${cartaSelecionada.nome} : 'Prévia da carta selecionada'"
              alt="Prévia da carta selecionada">
@@ -129,7 +129,7 @@
 
         <div class="campo-largo grupo-botoes">
           <button class="botao" type="submit">Publicar anúncio</button>
-          <a class="botao botao-secundario" href="listagem.html" th:href="@{/pages/listagem.html}">Cancelar</a>
+          <a class="botao botao-secundario" th:href="@{/anuncios}">Cancelar</a>
         </div>
       </form>
     </section>
