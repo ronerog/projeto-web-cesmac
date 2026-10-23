@@ -106,11 +106,7 @@
           <label for="condicao">Condição</label>
           <select th:field="*{condicao}">
             <option value="">Selecione a condição</option>
-            <option value="Nova/Lacrada">Nova/Lacrada</option>
-            <option value="Excelente">Excelente</option>
-            <option value="Boa">Boa</option>
-            <option value="Jogada">Jogada</option>
-            <option value="Danificada">Danificada</option>
+            <option th:each="condicao : ${condicoes}" th:value="${condicao}" th:text="${condicao.descricao}">Excelente</option>
           </select>
           <span class="campo-mensagem-erro" th:if="${#fields.hasErrors('condicao')}" th:errors="*{condicao}"></span>
         </div>

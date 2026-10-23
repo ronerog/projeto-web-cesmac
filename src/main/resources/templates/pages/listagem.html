@@ -55,11 +55,7 @@
         </h3>
         <div class="etiquetas">
           <span class="etiqueta" th:text="${anuncio.cartaRaridade}">Raridade</span>
-          <span class="badge" th:classappend="'badge-' + ${anuncio.status}" th:switch="${anuncio.status}">
-            <th:block th:case="'a-venda'">À venda</th:block>
-            <th:block th:case="'reservada'">Reservada</th:block>
-            <th:block th:case="'vendida'">Vendida</th:block>
-          </span>
+          <span class="badge" th:classappend="'badge-' + ${anuncio.status.codigo}" th:text="${anuncio.status.descricao}">À venda</span>
         </div>
         <div class="carta-estatisticas">
           <div class="estatistica">
@@ -67,7 +63,7 @@
             <span class="estatistica-rotulo">Preço</span>
           </div>
           <div class="estatistica">
-            <span class="estatistica-valor" th:text="${anuncio.condicao}">Condição</span>
+            <span class="estatistica-valor" th:text="${anuncio.condicao.descricao}">Condição</span>
             <span class="estatistica-rotulo">Condição</span>
           </div>
         </div>

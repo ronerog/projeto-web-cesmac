@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
-import pokemon_web.domain.StatusAnuncio;
+import pokemon_web.domain.CondicaoCarta;
 import pokemon_web.exception.ApiCartasIndisponivelException;
 import pokemon_web.form.AlteracaoStatusForm;
 import pokemon_web.form.AnuncioCadastroForm;
@@ -38,6 +38,11 @@ public class AnuncioController {
 	public AnuncioController(AnuncioService anuncioService, CartaService cartaService) {
 		this.anuncioService = anuncioService;
 		this.cartaService = cartaService;
+	}
+
+	@ModelAttribute("condicoes")
+	public CondicaoCarta[] condicoes() {
+		return CondicaoCarta.values();
 	}
 
 	@GetMapping("/anuncios")
@@ -113,8 +118,7 @@ public class AnuncioController {
 		}
 
 		if (!validacao.hasErrors()) {
-			StatusAnuncio novoStatus = StatusAnuncio.porCodigo(statusForm.getStatus()).orElseThrow();
-			if (anuncioService.alterarStatus(id, novoStatus)) {
+			if (anuncioService.alterarStatus(id, statusForm.getStatus())) {
 				redirectAttributes.addFlashAttribute(ATRIBUTO_MENSAGEM, "Status atualizado com sucesso.");
 				return redirecionarEdicao(id);
 			}

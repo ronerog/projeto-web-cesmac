@@ -49,11 +49,7 @@
           <div class="etiquetas">
             <span class="etiqueta" th:text="${anuncio.cartaColecao}">Coleção</span>
             <span class="etiqueta" th:text="${anuncio.cartaRaridade}">Raridade</span>
-            <span class="badge" th:classappend="'badge-' + ${anuncio.status}" th:switch="${anuncio.status}">
-              <th:block th:case="'a-venda'">À venda</th:block>
-              <th:block th:case="'reservada'">Reservada</th:block>
-              <th:block th:case="'vendida'">Vendida</th:block>
-            </span>
+            <span class="badge" th:classappend="'badge-' + ${anuncio.status.codigo}" th:text="${anuncio.status.descricao}">À venda</span>
           </div>
           <h2 th:text="${anuncio.cartaNome}">Nome da carta</h2>
           <p class="campo-ajuda" th:text="${anuncio.cartaColecao} + ' · nº ' + ${anuncio.cartaNumero}">Coleção · nº</p>
@@ -65,7 +61,7 @@
             </div>
             <div>
               <dt>Condição</dt>
-              <dd th:text="${anuncio.condicao}">Condição</dd>
+              <dd th:text="${anuncio.condicao.descricao}">Condição</dd>
             </div>
             <div>
               <dt>Vendedor</dt>

@@ -1,30 +1,25 @@
 package pokemon_web.domain;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 public enum StatusAnuncio {
 
-	A_VENDA("a-venda"),
-	RESERVADA("reservada"),
-	VENDIDA("vendida");
-
-	public static final String CODIGOS_VALIDOS = "a-venda|reservada|vendida";
+	A_VENDA("a-venda", "À venda"),
+	RESERVADA("reservada", "Reservada"),
+	VENDIDA("vendida", "Vendida");
 
 	private final String codigo;
+	private final String descricao;
 
-	StatusAnuncio(String codigo) {
+	StatusAnuncio(String codigo, String descricao) {
 		this.codigo = codigo;
+		this.descricao = descricao;
 	}
 
 	public String getCodigo() {
 		return codigo;
 	}
 
-	public static Optional<StatusAnuncio> porCodigo(String codigo) {
-		return Arrays.stream(values())
-				.filter(status -> status.codigo.equals(codigo))
-				.findFirst();
+	public String getDescricao() {
+		return descricao;
 	}
 
 }

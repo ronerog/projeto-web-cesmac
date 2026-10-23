@@ -1,12 +1,16 @@
 package pokemon_web.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import pokemon_web.domain.CondicaoCarta;
+import pokemon_web.domain.StatusAnuncio;
 
 @Entity
 @Table(name = "anuncios")
@@ -19,16 +23,18 @@ public class Anuncio {
 	@JoinColumn(name = "carta_id", nullable = false)
 	private Carta carta;
 	private double preco;
-	private String condicao;
+	@Enumerated(EnumType.STRING)
+	private CondicaoCarta condicao;
 	private String descricao;
 	private String vendedor;
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private StatusAnuncio status;
 
 	public Anuncio() {
 	}
 
-	public Anuncio(Long id, Carta carta, double preco, String condicao, String descricao, String vendedor,
-			String status) {
+	public Anuncio(Long id, Carta carta, double preco, CondicaoCarta condicao, String descricao, String vendedor,
+			StatusAnuncio status) {
 		this.id = id;
 		this.carta = carta;
 		this.preco = preco;
@@ -82,11 +88,11 @@ public class Anuncio {
 		this.preco = preco;
 	}
 
-	public String getCondicao() {
+	public CondicaoCarta getCondicao() {
 		return condicao;
 	}
 
-	public void setCondicao(String condicao) {
+	public void setCondicao(CondicaoCarta condicao) {
 		this.condicao = condicao;
 	}
 
@@ -106,12 +112,16 @@ public class Anuncio {
 		this.vendedor = vendedor;
 	}
 
-	public String getStatus() {
+	public StatusAnuncio getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(StatusAnuncio status) {
 		this.status = status;
+	}
+
+	public boolean isVendido() {
+		return status == StatusAnuncio.VENDIDA;
 	}
 
 }

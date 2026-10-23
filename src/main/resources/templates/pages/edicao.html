@@ -55,11 +55,7 @@
           <h3 th:text="${anuncio.cartaNome}"></h3>
           <p class="campo-ajuda" th:text="${anuncio.cartaColecao} + ' · ' + ${anuncio.cartaRaridade} + ' · nº ' + ${anuncio.cartaNumero}"></p>
           <p>
-            <span class="badge" th:classappend="'badge-' + ${anuncio.status}" th:switch="${anuncio.status}">
-              <th:block th:case="'a-venda'">À venda</th:block>
-              <th:block th:case="'reservada'">Reservada</th:block>
-              <th:block th:case="'vendida'">Vendida</th:block>
-            </span>
+            <span class="badge" th:classappend="'badge-' + ${anuncio.status.codigo}" th:text="${anuncio.status.descricao}">À venda</span>
           </p>
         </div>
       </div>
@@ -78,11 +74,7 @@
           <label for="condicao">Condição</label>
           <select th:field="*{condicao}">
             <option value="">Selecione a condição</option>
-            <option value="Nova/Lacrada">Nova/Lacrada</option>
-            <option value="Excelente">Excelente</option>
-            <option value="Boa">Boa</option>
-            <option value="Jogada">Jogada</option>
-            <option value="Danificada">Danificada</option>
+            <option th:each="condicao : ${condicoes}" th:value="${condicao}" th:text="${condicao.descricao}">Excelente</option>
           </select>
           <span class="campo-mensagem-erro" th:if="${#fields.hasErrors('condicao')}" th:errors="*{condicao}"></span>
         </div>
@@ -101,13 +93,13 @@
 
       <div class="grupo-botoes">
         <button class="botao" type="submit" form="formulario-edicao">Salvar alterações</button>
-        <form th:action="@{/anuncios/{id}/status(id=${anuncio.id})}" method="post" onsubmit="return confirm('Confirmar venda desta carta?');" th:if="${anuncio.status != 'vendida'}">
-          <input type="hidden" name="status" value="vendida">
+        <form th:action="@{/anuncios/{id}/status(id=${anuncio.id})}" method="post" onsubmit="return confirm('Confirmar venda desta carta?');" th:unless="${anuncio.vendido}">
+          <input type="hidden" name="status" value="VENDIDA">
           <button class="botao botao-sucesso" type="submit">Marcar vendida</button>
         </form>
-        <form th:action="@{/anuncios/{id}/status(id=${anuncio.id})}" method="post" th:if="${anuncio.status != 'vendida'}">
-          <input type="hidden" name="status" th:value="${anuncio.status == 'reservada'} ? 'a-venda' : 'reservada'">
-          <button class="botao botao-destaque" type="submit" th:text="${anuncio.status == 'reservada'} ? 'Voltar para à venda' : 'Marcar como reservada'">Marcar como reservada</button>
+        <form th:action="@{/anuncios/{id}/status(id=${anuncio.id})}" method="post" th:unless="${anuncio.vendido}">
+          <input type="hidden" name="status" th:value="${anuncio.status.name() == 'RESERVADA'} ? 'A_VENDA' : 'RESERVADA'">
+          <button class="botao botao-destaque" type="submit" th:text="${anuncio.status.name() == 'RESERVADA'} ? 'Voltar para à venda' : 'Marcar como reservada'">Marcar como reservada</button>
         </form>
         <form th:action="@{/anuncios/{id}/excluir(id=${anuncio.id})}" method="post" onsubmit="return confirm('Deseja realmente excluir este anúncio?');">
           <button class="botao botao-perigo" type="submit">Excluir anúncio</button>

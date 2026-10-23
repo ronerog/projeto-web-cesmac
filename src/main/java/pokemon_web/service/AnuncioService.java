@@ -1,11 +1,13 @@
 package pokemon_web.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import pokemon_web.domain.StatusAnuncio;
+import pokemon_web.dto.ResumoPainelDto;
 import pokemon_web.form.AnuncioCadastroForm;
 import pokemon_web.form.AnuncioEdicaoForm;
 import pokemon_web.model.Anuncio;
@@ -27,6 +29,25 @@ public class AnuncioService {
 		return anuncioRepository.findAll();
 	}
 
+	public ResumoPainelDto resumirPainel() {
+		List<Anuncio> anuncios = anuncioRepository.findAll();
+
+		List<Anuncio> ativos = anuncios.stream()
+				.filter(anuncio -> !anuncio.isVendido())
+				.toList();
+		long totalVendidas = anuncios.stream()
+				.filter(Anuncio::isVendido)
+				.count();
+		double valorTotal = ativos.stream().mapToDouble(Anuncio::getPreco).sum();
+
+		Anuncio destaque = ativos.stream()
+				.max(Comparator.comparingDouble(Anuncio::getPreco))
+				.orElse(null);
+
+		return new ResumoPainelDto(destaque, ativos.size(), totalVendidas, valorTotal,
+				anuncioRepository.findTop3ByOrderByIdDesc());
+	}
+
 	public Anuncio buscarPorId(Long id) {
 		return anuncioRepository.findById(id).orElse(null);
 	}
@@ -38,7 +59,7 @@ public class AnuncioService {
 		}
 
 		Anuncio anuncio = new Anuncio(null, carta, formulario.getPreco(), formulario.getCondicao(),
-				formulario.getDescricao(), formulario.getVendedor(), StatusAnuncio.A_VENDA.getCodigo());
+				formulario.getDescricao(), formulario.getVendedor(), StatusAnuncio.A_VENDA);
 		return anuncioRepository.save(anuncio);
 	}
 
@@ -61,12 +82,11 @@ public class AnuncioService {
 			return false;
 		}
 
-		boolean jaVendido = StatusAnuncio.VENDIDA.getCodigo().equals(anuncio.getStatus());
-		if (jaVendido && novoStatus != StatusAnuncio.VENDIDA) {
+		if (anuncio.isVendido() && novoStatus != StatusAnuncio.VENDIDA) {
 			return false;
 		}
 
-		anuncio.setStatus(novoStatus.getCodigo());
+		anuncio.setStatus(novoStatus);
 		anuncioRepository.save(anuncio);
 		return true;
 	}

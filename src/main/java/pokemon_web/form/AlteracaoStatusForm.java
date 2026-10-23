@@ -1,20 +1,18 @@
 package pokemon_web.form;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
 import pokemon_web.domain.StatusAnuncio;
 
 public class AlteracaoStatusForm {
 
-	@NotBlank(message = "Informe o novo status.")
-	@Pattern(regexp = StatusAnuncio.CODIGOS_VALIDOS, message = "Status inválido.")
-	private String status;
+	@NotNull(message = "Informe o novo status.")
+	private StatusAnuncio status;
 
-	public String getStatus() {
+	public StatusAnuncio getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(StatusAnuncio status) {
 		this.status = status;
 	}
 
