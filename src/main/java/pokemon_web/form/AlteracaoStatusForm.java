@@ -1,7 +1,8 @@
-package pokemon_web.model;
+package pokemon_web.form;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import pokemon_web.domain.StatusAnuncio;
 
 public class AlteracaoStatusForm {
 

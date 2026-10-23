@@ -14,10 +14,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
+import pokemon_web.dto.PokemonTcgCardDto;
+import pokemon_web.dto.PokemonTcgCartaRespostaDto;
+import pokemon_web.dto.PokemonTcgListaRespostaDto;
+import pokemon_web.exception.ApiCartasIndisponivelException;
 import pokemon_web.model.Carta;
-import pokemon_web.model.PokemonTcgCardDto;
-import pokemon_web.model.PokemonTcgCartaRespostaDto;
-import pokemon_web.model.PokemonTcgListaRespostaDto;
 import pokemon_web.repository.CartaRepository;
 
 @Service

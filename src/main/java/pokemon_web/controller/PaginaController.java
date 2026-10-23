@@ -9,8 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import pokemon_web.domain.StatusAnuncio;
 import pokemon_web.model.Anuncio;
-import pokemon_web.model.StatusAnuncio;
 import pokemon_web.service.AnuncioService;
 
 @Controller

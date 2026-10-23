@@ -1,4 +1,4 @@
-package pokemon_web.model;
+package pokemon_web.dto;
 
 import java.util.List;
 

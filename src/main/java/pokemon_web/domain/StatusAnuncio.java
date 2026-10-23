@@ -1,4 +1,4 @@
-package pokemon_web.model;
+package pokemon_web.domain;
 
 import java.util.Arrays;
 import java.util.Optional;

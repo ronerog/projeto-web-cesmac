@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
-import pokemon_web.model.AlteracaoStatusForm;
+import pokemon_web.domain.StatusAnuncio;
+import pokemon_web.exception.ApiCartasIndisponivelException;
+import pokemon_web.form.AlteracaoStatusForm;
+import pokemon_web.form.AnuncioCadastroForm;
+import pokemon_web.form.AnuncioEdicaoForm;
 import pokemon_web.model.Anuncio;
-import pokemon_web.model.AnuncioCadastroForm;
-import pokemon_web.model.AnuncioEdicaoForm;
 import pokemon_web.model.Carta;
-import pokemon_web.model.StatusAnuncio;
 import pokemon_web.service.AnuncioService;
-import pokemon_web.service.ApiCartasIndisponivelException;
 import pokemon_web.service.CartaService;
 
 @Controller
